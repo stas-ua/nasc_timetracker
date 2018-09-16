@@ -129,6 +129,7 @@ autoUpdater.on('update-available', function (info) {
 
 autoUpdater.on('update-not-available', function (info) {
   sendStatusToWindow('Update not available.');
+  log.info(info);
 });
 
 autoUpdater.on('error', function (err) {
