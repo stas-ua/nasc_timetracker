@@ -1,5 +1,6 @@
 import api from '../api';
 import db from '../datastore';
+var log = require('electron-log');
 
 export default {
 
@@ -43,6 +44,7 @@ export default {
               });
             });
             console.log("Tasks updated");
+            log.info("Tasks updated");
         });
         api.getAllProjects().then(function(result){            
             result.data.forEach(element => {
@@ -56,6 +58,7 @@ export default {
               });
             });
             console.log("projects updated");
+            log.info("projects updated");
         });
         api.getAllProblems().then(function(result){            
             result.data.forEach(element => {
@@ -69,6 +72,7 @@ export default {
               });
             });
             console.log("problems updated");
+            log.info("problems updated");
         });
         api.getAllDeliverables().then(function(result){            
             result.data.forEach(element => {

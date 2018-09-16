@@ -62,7 +62,7 @@
      
     </main> -->
     
-    <div class="container-fluid ">
+    <div class="container-fluid " id="appcontent"> 
         <div class="row m-3">
           <div class="col">
               <router-view></router-view>
@@ -70,6 +70,13 @@
       
         </div>
       </div>
+
+      <footer class="footer fixed-bottom">
+      <div class="container ">
+        <span class="text-muted">Version: {{version}}</span>
+        <span> {{footerMsg}} ddfb</span>
+      </div>
+    </footer>
  
   </div>
 </template>
@@ -77,13 +84,30 @@
 <script>
 //import axios from 'axios';
 import api from './api';
+import sync from './service/syncService';
+//const {app} = require('electron').remote;
+import {version} from '../../package.json';
+var log = require('electron-log');
 
   export default {
     name: 'timetracker',
+    data: function(){
+      return {
+        version : version,
+        footerMsg: null
+      };
+    },
     created(){
       let vm = this;
+     // console.log(app.getVersion());
       //if(this.isAuthentificated)
         //sync.setSyncTask();
+        // vm.$electron.ipcRenderer.on('footer-msg', (event, data) => {
+        //   this.footerMsg = data
+        //   //console.log(data)
+        // });
+
+        log.warn("Just test in app created");
     },
     computed: {
         isAuthentificated(){
@@ -149,10 +173,21 @@ import api from './api';
   body {
   /* padding-top: 60px; */
   padding-top: 4em;
+  
 }
 @media (max-width: 979px) {
   body {
     padding-top: 0px;
   }
 }
+#appcontent{
+  margin-bottom: 30px;
+}
+.footer {
+  width: 100%;
+  height: 30px; /* Set the fixed height of the footer here */
+  line-height: 30px; /* Vertically center the text there */
+  background-color: #343a40;
+}
+
 </style>
