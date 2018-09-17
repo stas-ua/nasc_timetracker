@@ -116,7 +116,12 @@ var log = require('electron-log');
 log.transports.file.level = 'info';
  
 autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
+  sendStatusToWindow('Application will be closed in 5 sec and new version  will be installed.');
+  setTimeout(function() {
+    autoUpdater.quitAndInstall(); 
+  }, 5000)
+
+
 })
 
 autoUpdater.on('checking-for-update', function () {
@@ -149,8 +154,9 @@ autoUpdater.on('update-downloaded', function (info) {
 });
 
 function sendStatusToWindow(message) {
-  console.log(message);
+  
   log.info(message);
+  mainWindow.webContents.send('main-process-message', message);
  // ipcMain.send('footer-msg', message);
   // tray.displayBalloon({
   //   content:message

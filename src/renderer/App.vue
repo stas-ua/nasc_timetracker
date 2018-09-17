@@ -72,9 +72,9 @@
       </div>
 
       <footer class="footer fixed-bottom">
-      <div class="container ">
+      <div class="container d-flex justify-content-between">
         <span class="text-muted">Version: {{version}}</span>
-        <span> {{footerMsg}} ddfb</span>
+        <span> {{footerMsg}} </span>
       </div>
     </footer>
  
@@ -87,6 +87,7 @@ import api from './api';
 import sync from './service/syncService';
 //const {app} = require('electron').remote;
 import {version} from '../../package.json';
+const {ipcRenderer} = require('electron');
 var log = require('electron-log');
 
   export default {
@@ -106,8 +107,11 @@ var log = require('electron-log');
         //   this.footerMsg = data
         //   //console.log(data)
         // });
+        ipcRenderer.on('main-process-message', function(event, text) {          
+          this.footerMsg = text;
+        });
 
-        log.warn("Just test in app created");
+        log.info("App started ", this.$store.state.user.login);
     },
     computed: {
         isAuthentificated(){
@@ -120,7 +124,7 @@ var log = require('electron-log');
     methods: {
       logOut(){
            let vm = this;
-        vm.$store.dispatch("logOut")
+           vm.$store.dispatch("logOut")
               .then(function(){
                   vm.$router.push({name: 'login'});
               });//        "f9Y4xvgNKv1dzzBfoF7m"
