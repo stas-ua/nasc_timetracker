@@ -33,6 +33,15 @@ const  router =  new Router({
       }    
     },
     {
+      path: '/activityCreate',
+      name: 'activity-create',
+      component: require('@/components/ActivityEdit').default,
+      //props:true,
+      meta:{
+        private: true,
+      }
+    },
+    {
       path: '/activityEdit/:dbId',
       name: 'activity-edit',
       component: require('@/components/ActivityEdit').default,

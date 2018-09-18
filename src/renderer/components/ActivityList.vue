@@ -8,7 +8,10 @@
         <!-- <router-link class="btn btn-sm btn-outline-success"  :to="{ name: 'activity-edit' }" >
                         <i class="fa fa-plus"></i> Add
               </router-link> -->
-              <button class="btn btn-sm btn-outline-secondary" @click="addNew">
+               <button class="btn btn-sm btn-outline-secondary" @click.prevent="push">
+                <i class="fa fa-cloud-upload"></i> Push
+              </button>
+              <button class="btn btn-sm btn-outline-secondary ml-2 mr-2" @click.prevent="addNew">
                 <i class="fa fa-plus"></i> Add
               </button>
     </div>
@@ -23,30 +26,33 @@
            <table class="table table-hover table-sm">
               <thead>
                   <tr>
+                     <th><input type="checkbox" v-model="allItemsSelected" /></th>
                       <th>Name</th>
                       <th>Date</th>
                       <th>Project</th>
                       <th>Task</th>
+                      <th>PM ID</th>
                       <th>Spent Time</th>
                       <th>
                       </th>
                   </tr>
               </thead>
               <tbody>
-                  <tr :key="item._id" v-for="(item) in items" :class="{'text-danger':item.active}">
-                  
+                  <tr :key="item._id" v-for="(item) in items" :class="{'text-danger':item.active, 'text-success': item.uploaded}">
+                      <td><input type="checkbox" v-model="item.selected" /></td>  
                       <td>{{item.name}}</td>                            
                       <td>{{item.date|formatDate}}</td>   
                       <td>{{item.project?item.project.name:''}}</td> 
                       <td>{{item.task?item.task.name:''}}</td>   
+                         <td>{{item.pmId}}</td>  
                        <td>{{toHHMMSS(item.spentTime)}}</td>  
                       <td>
 
                        
                            <div class="toolbar">
-                                    <button v-show="item.active" class="btn btn-sm btn-outline-danger" @click.prevent="stopActivity(item)" title="Stop"><i class="fa fa-stop"></i></button>
-                                    <button v-show="!item.active" class="btn btn-sm btn-outline-secondary" @click.prevent="startActivity(item)" title="Start"><i class="fa fa-play"></i></button>
-                                     <button class="btn btn-sm btn-outline-secondary" @click.prevent="editActivity(item._id)"> <i class="fa fa-edit"></i>
+                                    <button v-show="item.active" class="btn btn-sm btn-outline-danger" @click.prevent="stopActivity(item)" title="Stop" ><i class="fa fa-stop"></i></button>
+                                    <button v-show="!item.active" class="btn btn-sm btn-outline-secondary" @click.prevent="startActivity(item)" title="Start" :disabled="item.uploaded"><i class="fa fa-play"></i></button>
+                                     <button class="btn btn-sm btn-outline-secondary" @click.prevent="editActivity(item._id)" :disabled="item.uploaded"> <i class="fa fa-edit" ></i>
                             </button>  
                                 </div>
                       </td>
@@ -55,25 +61,36 @@
           </table>
       </div>
     </div>
-         
+     <!-- <loading :active.sync="isLoading" 
+        :can-cancel="false" 
+        :is-full-page="true"></loading> -->
+          <vue-element-loading :active="isLoading" is-full-screen/>
   </div>
 </template>
 
 <script>
   //import SystemInformation from './LandingPage/SystemInformation'
- // import api from '../api';
+ import api from '../api';
 
-
+import { setTimeout } from 'timers';
+import VueElementLoading from 'vue-element-loading';
+var log = require('electron-log');
 
   export default {
     name: 'activity-list',
+components: {
+    VueElementLoading
+  },
     beforeDestroy(){
          clearInterval(this.activeTask);
     },
     created(){
       let vm = this;
       vm.$db.activities.find({}).sort({createdOn:-1}).exec( function (err, docs) {
-           vm.items = docs;
+        
+           vm.items = docs.map(act=>{
+             return Object.assign({ selected:false}, act);
+           });
         });
       // let url =   "http://pm.nasctech.com/api/v1/custom_objects/timetracker/get_tasks";
       // axios.get(url, {
@@ -89,16 +106,109 @@
       return {
         activeTask:null,
         activeActivity:null,
+        isLoading:false,
+       // allItemsSelected:false,
        // activeTime:null,
         items: [] //[{id:1, name:"SomeName"}, {id:2, name:"SomeName2"},{id:3, name:"SomeName3"},{id:4, name:"SomeName4"}],
 
       };
 
     },
+    computed:{
+      allItemsSelected:{
+        get () {
+          return this.items.some(it=>it.selected);
+        },
+        set (value) {
+          this.items.forEach(it=>it.selected=value);
+          
+        }
+      }
+    },
     methods: {
+      async saveToDb(act){
+         let vm = this;
+        return new Promise(function(resolve,reject){
+             vm.$db.activities.update({_id:act._id}, act, {  }, function (err, numReplaced) {
 
+                if(err){
+                  reject(err);
+                } else{
+                  resolve(act);
+                }        
+                
+              });
+        });
+       
+      },
+      async pushOne(act){
+        log.info("try to push activity to server ", act);
+        let vm = this;
+        let sAct = {
+                 projectId:act.project?act.project.id:null,
+                 taskId:act.task?act.task.id:null,
+                 spentTime:(act.spentTime/3600.00).toFixed(2),
+                 name:act.name,
+                 date:act.date,
+                 deliverableId:act.deliverable?act.deliverable.id:null,
+                 requirementId:act.requirement?act.requirement.id:null,
+                 processId:act.process?act.process.id:null,
+                 problemId:act.problem?act.problem.id:null,
+                 hypotesisId:act.hypotesis?act.hypotesis.id:null,
+                 workOrderId:act.workOrder?act.workOrder.id:null,
+               }
+             return api.createActivityOnServer(sAct).then(result=>{
+                  console.log(result);
+                  if(!result || !result.data){
+                    throw new Error("No server result");
+                  }
+                  if( result.data.status && result.data.id ){
+                    return {
+                       uploaded : true,
+                       pmId : result.data.id
+                     };
+                  }else{
+                    throw new Error("Server return error: " + result.data.description );
+                  }
+                 // vm.isLoading = false;
+               });
+      },
+      async pushAll(){
+        let vm = this;
+          //vm.isLoading = true;
+          for (const act of vm.items) {
+             if(act.selected && !act.uploaded){
+               try {
+
+                 let res = await vm.pushOne(act);
+
+                 act.uploaded = res.uploaded;
+                 act.pmId = res.pmId;
+                 act.selected = false;
+
+                 let dbRes = await vm.saveToDb(act);
+                
+
+               } catch (error) {
+                 console.log(error);
+               }
+
+             }
+          }
+
+       
+      },
+      push(){
+        let vm = this;
+        vm.isLoading = true;
+        vm.pushAll().then(()=>{
+          //vm.allItemsSelected = false;
+            vm.isLoading = false;
+        });
+
+      },
       addNew () {
-        this.$router.push({ name: `activity-edit` });
+        this.$router.push({ name: 'activity-create' });
       },
       editActivity(id){
        // this.$router.push({path:'activityEdit/' + id});

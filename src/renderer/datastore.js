@@ -7,6 +7,10 @@ db.common =  new Datastore({
   autoload: true,
   filename: path.join(remote.app.getPath('userData'), '/common.db')
 });
+db.keyTargets =  new Datastore({
+  autoload: true,
+  filename: path.join(remote.app.getPath('userData'), '/keyTargets.db')
+});
 db.activities =  new Datastore({
   autoload: true,
   filename: path.join(remote.app.getPath('userData'), '/activities.db')

@@ -72,7 +72,7 @@
       </div>
 
       <footer class="footer fixed-bottom">
-      <div class="container d-flex justify-content-between">
+      <div class="d-flex justify-content-between">
         <span class="text-muted">Version: {{version}}</span>
         <span> {{footerMsg}} </span>
       </div>
@@ -90,6 +90,8 @@ import {version} from '../../package.json';
 const {ipcRenderer} = require('electron');
 var log = require('electron-log');
 
+
+
   export default {
     name: 'timetracker',
     data: function(){
@@ -99,19 +101,9 @@ var log = require('electron-log');
       };
     },
     created(){
-      let vm = this;
-     // console.log(app.getVersion());
-      //if(this.isAuthentificated)
-        //sync.setSyncTask();
-        // vm.$electron.ipcRenderer.on('footer-msg', (event, data) => {
-        //   this.footerMsg = data
-        //   //console.log(data)
-        // });
-        ipcRenderer.on('main-process-message', function(event, text) {          
-          this.footerMsg = text;
-        });
+      let vm = this;    
 
-        log.info("App started ", this.$store.state.user.login);
+        log.info("App started ", vm.$store.state.user.login);
     },
     computed: {
         isAuthentificated(){

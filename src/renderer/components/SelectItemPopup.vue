@@ -107,7 +107,7 @@ import _ from "lodash";
             return;
         if(!val){
               vm.init = false;
-             vm.$db[vm.collectionName].find(vm.filter, function (err, doc) {
+             vm.$db[vm.collectionName].find(vm.filter).limit(100).exec(  function (err, doc) {
                   //console.log(doc);
                   vm.items = doc;
                   vm.init = true;
@@ -127,7 +127,7 @@ import _ from "lodash";
             }
             vm.init = false;
             let resFilter = { $and: [vm.filter  , { $or: filterExpr}] };            
-            vm.$db[vm.collectionName].find(resFilter, function (err, docs) {
+            vm.$db[vm.collectionName].find(resFilter).limit(100).exec( function (err, docs) {
                       //console.log(doc);
                       if(err){
                         console.error(err);
@@ -150,9 +150,11 @@ import _ from "lodash";
       },
       show: function (val) {  
         let vm = this;        
+        
         if(val){          
-          vm.$db[this.collectionName].find(vm.filter, function (err, doc) {
-                  //console.log(doc);
+         // console.log("in popup show", this.collectionName);
+          vm.$db[this.collectionName].find(vm.filter).limit(100).exec( function (err, doc) {
+                 // console.log(doc);
                   vm.items = doc;
                   vm.init = true;
                 });

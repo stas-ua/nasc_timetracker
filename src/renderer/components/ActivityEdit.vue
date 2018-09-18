@@ -25,9 +25,9 @@
 
                                 
                               <div class="input-group mb-3">
-                                <input name="project"  type="text" class="form-control "  :value="activity.project?activity.project.name:''" disabled  aria-describedby="button-addon2">
+                                <input name="project"  type="text" class="form-control "  :value="activity.project?activity.project.name:''" disabled  aria-describedby="button-addon_project">
                                 <div class="input-group-append">
-                                  <button class="btn btn-outline-secondary" type="button" id="button-addon2" @click.prevent="projectPopupParam.show=true">...</button>
+                                  <button class="btn btn-outline-secondary" type="button" id="button-addon_project" @click.prevent="projectPopupParam.show=true">...</button>
                                 </div>
                               </div> 
                        
@@ -53,31 +53,49 @@
                                 <label class="col-form-label " for="price">Task <span class="text-danger">*</span></label>
                                 
                                 <div class="input-group mb-3">
-                                  <input name="task"  type="text" class="form-control "  :value="activity.task?activity.task.name:''" disabled  aria-describedby="button-addon2">
+                                  <input name="task"  type="text" class="form-control "  :value="activity.task?activity.task.name:''" disabled  aria-describedby="button-addon_task">
                                   <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" @click.prevent="taskPopupParam.show=true">...</button>
+                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_task" @click.prevent="taskPopupParam.show=true">...</button>
                                   </div>
                                 </div>                                
                        
 
                             </div>  
-                            <div class="form-group col">
-                                <label class="col-form-label " for="spentTime">Spent Time <span class="text-danger">*</span></label>
-
-                                <!-- <input v-validate="'required'" name="spentTime" class="form-control " v-model="activity.spentTime" type="number"  placeholder="Spent Time"/> -->
-                                <div  >
-                                     <!-- <vue-timepicker   v-model="spentTimePicker" format="HH:mm:ss"></vue-timepicker> -->
-                                </div>
-                             
-                               
-                                <span v-if="errors.first('spentTime')" class="text-danger">{{ errors.first('spentTime') }}</span>
+                            <div class="form-group col-sm">
+                                <label class="col-form-label " for="price">Key Target </label>
+                                
+                                <div class="input-group mb-3">
+                                  <input name="keytarget"  type="text" class="form-control "  :value="activity.keytarget?activity.keytarget.name:''" disabled  aria-describedby="button-addon_keytarget">
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_keytarget" @click.prevent="keytargetPopupParam.show=true">...</button>
+                                  </div>
+                                </div>                                
+                       
 
                             </div>
                               
                   
               
                         </div> 
-                        <Timepicker v-model="spentTimePicker"></Timepicker>  
+                        <!-- <div class="form-row">
+                          
+                        </div> -->
+                         <div class="form-group ">
+                                <label class="col-form-label " for="spentTime">Spent Time <span class="text-danger">*</span></label>
+
+                                <Timepicker v-model="spentTimePicker"></Timepicker> 
+
+                         </div>
+                       
+                       
+                        <!-- <div class="row">
+                          <div class="col-sm-4">
+                                 <strong>Spent Time:</strong>
+                          </div>
+                           <div class="col-sm-8">
+                               <Timepicker v-model="spentTimePicker"></Timepicker> 
+                          </div>
+                          </div>  -->
                         <div class="form-row">
                             <div class="form-group col">
                                 <label class="col-form-label " for="name">Activity <span class="text-danger">*</span></label>
@@ -91,7 +109,21 @@
                                 </span> -->
 
                             </div>
+                            
                         </div>
+                        <div class="row">
+                            <div class=col-sm-4>
+                                <div class="form-group form-check">
+                                  <input type="checkbox" class="form-check-input" id="Overtime" v-model="activity.overtime">
+                                  <label class="form-check-label" for="Overtime">Overtime</label>
+                                </div>
+                                <!-- <div class="form-group form-check">
+                                  <input type="checkbox" class="form-check-input" id="Uploaded">
+                                  <label class="form-check-label" for="Uploaded">Uploaded</label>
+                                </div> -->
+                            </div>
+                        </div>
+                        
                           
                                             
                
@@ -105,9 +137,10 @@
                 
 
             </form>
-            <button class="btn btn-outline-primary btn-sm" @click.prevent="submit">Submit  <i class="fa fa-save"></i></button>
+            <br/>
+            <button class="btn btn-outline-primary " @click.prevent="submit">Submit  <i class="fa fa-save"></i></button>
              <!-- <button class="btn btn-outline-secondary btn-sm" @click.prevent="submit">Cancel  <i class="fa fa-ban"></i></button> -->
-                 <router-link class="btn btn-outline-secondary btn-sm" tag="button" :to="{ name: 'activity-list' }" >
+                 <router-link class="btn btn-outline-secondary " tag="button" :to="{ name: 'activity-list' }" >
                         <i class="fa fa-ban"></i> Cancel
               </router-link>
       </div>
@@ -122,8 +155,14 @@
          <select-item-popup 
          key="projectPopup"
          v-bind="projectPopupParam"
-         @itemSelected="selectItem(projectPopupParam, $event); clearTaskIfProjectSelected($event);" 
+         @itemSelected="selectItem(projectPopupParam, $event); " 
          @canceled="projectPopupParam.show=false;"></select-item-popup>
+
+          <select-item-popup 
+         key="keytargetPopup"
+         v-bind="keytargetPopupParam"
+         @itemSelected="selectItem(keytargetPopupParam, $event); setProjectFromKeyTarget($event);" 
+         @canceled="keytargetPopupParam.show=false;"></select-item-popup>
 
   </div>
 </template>
@@ -204,21 +243,42 @@
 
       setProjectFromTask(item){
         let vm = this;
-        console.log("svsdvsd");
+        //console.log("svsdvsd");
         vm.$db.projects.findOne({id:item.project_id}, function (err, doc) {
                   //console.log(doc);
                   if(err){
                     console.error("error on set project", err);
                   }else{
                      vm.activity.project = doc;
-                      console.log("vdvsdv");
+                     // console.log("vdvsdv");
                   }
                     
                 });
       },
-      clearTaskIfProjectSelected(item){
-        if(this.activity.task.project_id!=item.id)
-          this.activity.task = null;
+      setProjectFromKeyTarget(item){
+        let vm = this;
+        //console.log("svsdvsd", item);
+        vm.$db.projects.findOne({id:item.projectId}, function (err, doc) {
+                  //console.log(doc);
+                  if(err){
+                    console.error("error on set project", err);
+                  }else{
+                     vm.activity.project = doc;
+                     // console.log("vdvsdv");
+                  }
+                    
+                });
+      },
+      clearAllProjectRelatedProperties(item){
+        if(item){
+            if(this.activity.task && this.activity.task.project_id!=item.id)
+              this.activity.task = null;
+            if(this.activity.keytarget && this.activity.keytarget.projectId!=item.id)
+              this.activity.keytarget = null;
+        }else{
+
+        }
+        
       },
       toHHMMSS  (s) {
           var sec_num = s; 
@@ -238,7 +298,14 @@
       }
 
     },
-        data: function(){
+    watch:{
+      "activity.project": function(newVal, oldVal){
+        if(newVal!=oldVal){
+          this.clearAllProjectRelatedProperties(newVal);
+        }
+      }
+    },
+    data: function(){
       return {
         taskPopupParam:{
           show:false,
@@ -262,12 +329,26 @@
               {key:"name", caption:"Name", searchable:true},
             ],
              filter:{},
-        },       
+        },   
+         keytargetPopupParam:{
+          show:false,
+          collectionName:"keyTargets",
+          editedPropertyName:"keytarget",
+          columnsConfig:[
+              {key:"id", caption:"Id"}, 
+              {key:"projectName", caption:"Project", searchable:true},
+              {key:"name", caption:"Key Target", searchable:true}
+            ],
+            filter:{},
+        },    
         activity:{
+          overtime:false,
+          uploaded:false,
           createdOn:new Date(),
           name: null,
           project:null,
           task:null,
+          keytarget:null,
           spentTime:0,
           date: new Date(),
           localId:null,

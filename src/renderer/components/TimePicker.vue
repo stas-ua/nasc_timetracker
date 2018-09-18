@@ -1,7 +1,62 @@
 <template>
-   <div class="form-row">
+   <div class="row">
+       <div class=" col-sm">
+          <div class="input-group mb-3">
+            <input @input="onInput('hours', $event.target.value)" class="form-control" name="hours" :value="value.hours" type="number" min="0" max="23" aria-describedby="addon-h"/>
+
+            <div class="input-group-append">
+              <span class="input-group-text" id="addon-h">HH</span>
+            </div>
+          </div>
+      </div>
+        <div class=" col-sm">
+          <div class="input-group mb-3">
+            <input @input="onInput('minutes', $event.target.value)" class="form-control" name="minutes" :value="value.minutes" type="number" min="0" max="60" aria-describedby="addon-minutes"/>
+            <div class="input-group-append">
+              <span class="input-group-text" id="addon-minutes">MM</span>
+            </div>
+          </div>
+      </div>
+      <div class=" col-sm">
+ 
+          <div class="input-group mb-3">
+                     <input @input="onInput('seconds', $event.target.value)" class="form-control" name="seconds" :value="value.seconds" type="number" min="0" max="60" aria-describedby="addon-seconds"/>
+            <div class="input-group-append">
+              <span class="input-group-text" id="addon-minutes">SS</span>
+            </div>
+          </div>
+      </div>
+     
+
+     <!-- <div class="form-group col-sm">
+          <div class="input-group mb-3">
+            <input @input="onInput('hours', $event.target.value)" class="form-control" name="hours" :value="value.hours" type="number" min="0" max="23" aria-describedby="addon-h"/>
+
+            <div class="input-group-append">
+              <span class="input-group-text" id="addon-h">HH</span>
+            </div>
+          </div>
+      </div>
+        <div class="form-group col-sm">
+          <div class="input-group mb-3">
+            <input @input="onInput('minutes', $event.target.value)" class="form-control" name="minutes" :value="value.minutes" type="number" min="0" max="60" aria-describedby="addon-minutes"/>
+            <div class="input-group-append">
+              <span class="input-group-text" id="addon-minutes">MM</span>
+            </div>
+          </div>
+      </div>
+      <div class="form-group col-sm">
+ 
+          <div class="input-group mb-3">
+                     <input @input="onInput('seconds', $event.target.value)" class="form-control" name="seconds" :value="value.seconds" type="number" min="0" max="60" aria-describedby="addon-seconds"/>
+            <div class="input-group-append">
+              <span class="input-group-text" id="addon-minutes">SS</span>
+            </div>
+          </div>
+      </div> -->
+                                   
                           
-                            <div class="form-group col-sm">
+                            <!-- <div class="form-group col-sm">
                                 <label class="col-form-label " for="date">Hours </label>
                                 <input @input="onInput('hours', $event.target.value)" class="form-control" name="hours" :value="value.hours" type="number" min="0" max="23"/>
                             </div>
@@ -13,7 +68,7 @@
                                 <label class="col-form-label " for="date">Seconds </label>
                                 <input @input="onInput('seconds', $event.target.value)" class="form-control" name="seconds" :value="value.seconds" type="number" min="0" max="60"/>
                             </div>
-                                       
+                                        -->
               
    </div>  
 </template>

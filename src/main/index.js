@@ -110,16 +110,22 @@ app.on('activate', () => {
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
  */
 
-
+const {dialog} = require('electron');
 import { autoUpdater } from 'electron-updater';
 var log = require('electron-log');
 log.transports.file.level = 'info';
  
 autoUpdater.on('update-downloaded', () => {
   sendStatusToWindow('Application will be closed in 5 sec and new version  will be installed.');
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Found Updates',
+    message: "Application will be closed in 5 sec and new version  will be installed.",
+    //buttons: ['Yes', 'No']
+  });
   setTimeout(function() {
     autoUpdater.quitAndInstall(); 
-  }, 5000)
+  }, 7000)
 
 
 })
@@ -156,7 +162,7 @@ autoUpdater.on('update-downloaded', function (info) {
 function sendStatusToWindow(message) {
   
   log.info(message);
-  mainWindow.webContents.send('main-process-message', message);
+ // mainWindow.webContents.send('main-process-message', message);
  // ipcMain.send('footer-msg', message);
   // tray.displayBalloon({
   //   content:message
@@ -164,6 +170,7 @@ function sendStatusToWindow(message) {
 }
 
 
+//autoUpdater.checkForUpdates();
 
 app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
