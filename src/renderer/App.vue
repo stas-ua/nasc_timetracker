@@ -63,7 +63,7 @@
     </main> -->
     
     <div class="container-fluid " id="appcontent"> 
-        <div class="row m-3">
+        <div class="row m-3 mb-5">
           <div class="col">
               <router-view></router-view>
           </div>
@@ -77,6 +77,7 @@
         <span> {{footerMsg}} </span>
       </div>
     </footer>
+    
  
   </div>
 </template>

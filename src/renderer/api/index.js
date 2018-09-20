@@ -3,6 +3,7 @@ import store from '../store'
 
 const BASE_URL =  'http://pm.nasctech.com/api/v1/custom_objects/';
 const ENDPOINT = "timetracker/";
+const ENDPOINT2 = "a_timetracker/";
 const GET_ALL_TASKS_URL = BASE_URL + ENDPOINT + 'get_tasks_new';
 const GET_ALL_PROBLEMS_URL = BASE_URL + ENDPOINT +'timetracker/get_problems';
 const GET_ALL_REQUIREMENTS_URL = BASE_URL + ENDPOINT +'get_requirement';
@@ -11,11 +12,17 @@ const GET_ALL_SS_URL = BASE_URL + ENDPOINT +'get_ss';
 const GET_ALL_TASK_ACTIONS_URL = BASE_URL + ENDPOINT +'get_tasks_action';
 const GET_ALL_HYPOTESIS_URL = BASE_URL + ENDPOINT +'get_hypotesis';
 const GET_ALL_PROCESSES_URL = BASE_URL + ENDPOINT +'get_process';
-const CREATE_ACTIVITY_URL = BASE_URL + ENDPOINT +'create_new_activity';
+
 const GET_ALL_PROJECTS_URL = BASE_URL + ENDPOINT +'get_projects';
 const GET_ALL_GROUP_TASKS_URL = BASE_URL + ENDPOINT +'get_group_tasks';
 const GET_ALL_DELIVERABLES_URL = BASE_URL + ENDPOINT +'get_deliverables';
-const GET_ALL_KEY_TARGET_URL = BASE_URL + "GetKeyTargets/" +'get_key_targets';
+
+const GET_ALL_KEY_TARGET_URL = BASE_URL + ENDPOINT2 +'get_key_targets';
+
+const CREATE_ACTIVITY_URL_V1 = BASE_URL + ENDPOINT +'create_new_activity';
+const CREATE_ACTIVITY_URL = BASE_URL + ENDPOINT2 +'create_activity';
+
+const CREATE_TASK_URL = BASE_URL + ENDPOINT2 +'create_task';
 
 export default {
 

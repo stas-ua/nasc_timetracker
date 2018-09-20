@@ -2,9 +2,9 @@
   <div>
     <!-- <img id="logo" src="~@/assets/logo.png" alt="electron-vue"> -->
     
-    <div class="d-flex justify-content-between mb-3">
-      <h3>{{dbId?'Edit Activity':'Create Activity'}}
-    </h3>
+    <div class="d-flex justify-content-between mb-2">
+      <h5>{{dbId?'Edit Activity':'Create Activity'}}
+    </h5>
     <router-link  tag="a" :to="{ name: 'activity-list' }" >
                         <i class="fa fa-share"></i> Back To Activity List
               </router-link>
@@ -18,13 +18,12 @@
             <form>
                 <div class="row">
                     <div class="col-6">
-                        <div class="form-row">
-                          
+                        <div class="form-row">                          
                             <div class="form-group col-sm">
-                                <label class="col-form-label " for="price">Project <span class="text-danger">*</span></label>
+                                <label class="col-form-label " for="project">Project <span class="text-danger">*</span></label>
 
                                 
-                              <div class="input-group mb-3">
+                              <div class="input-group">
                                 <input name="project"  type="text" class="form-control "  :value="activity.project?activity.project.name:''" disabled  aria-describedby="button-addon_project">
                                 <div class="input-group-append">
                                   <button class="btn btn-outline-secondary" type="button" id="button-addon_project" @click.prevent="projectPopupParam.show=true">...</button>
@@ -50,9 +49,9 @@
                         <div class="form-row">                  
 
                             <div class="form-group col-sm">
-                                <label class="col-form-label " for="price">Task <span class="text-danger">*</span></label>
+                                <label class="col-form-label " for="task">Task <span class="text-danger">*</span></label>
                                 
-                                <div class="input-group mb-3">
+                                <div class="input-group ">
                                   <input name="task"  type="text" class="form-control "  :value="activity.task?activity.task.name:''" disabled  aria-describedby="button-addon_task">
                                   <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button" id="button-addon_task" @click.prevent="taskPopupParam.show=true">...</button>
@@ -62,9 +61,9 @@
 
                             </div>  
                             <div class="form-group col-sm">
-                                <label class="col-form-label " for="price">Key Target </label>
+                                <label class="col-form-label " for="keytarget">Key Target </label>
                                 
-                                <div class="input-group mb-3">
+                                <div class="input-group ">
                                   <input name="keytarget"  type="text" class="form-control "  :value="activity.keytarget?activity.keytarget.name:''" disabled  aria-describedby="button-addon_keytarget">
                                   <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button" id="button-addon_keytarget" @click.prevent="keytargetPopupParam.show=true">...</button>
@@ -77,15 +76,45 @@
                   
               
                         </div> 
+                         <div class="form-row">                  
+
+                            <div class="form-group col-sm-6">
+                                <label class="col-form-label " for="taskStatus">Task Status</label>
+                                
+                                <select v-model="activity.taskStatus" class="form-control " :disabled="activity.task==null">
+                                    <option :key="el.id" v-for="el in taskStatusOptions" v-bind:value="el" >{{el.text}}</option>
+                                </select>
+                                    
+                       
+
+                            </div>  
+                            
+                            <!-- <div class="form-group col-sm">
+                                <label class="col-form-label " for="price">Key Target </label>
+                                
+                                <div class="input-group ">
+                                  <input name="keytarget"  type="text" class="form-control "  :value="activity.keytarget?activity.keytarget.name:''" disabled  aria-describedby="button-addon_keytarget">
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_keytarget" @click.prevent="keytargetPopupParam.show=true">...</button>
+                                  </div>
+                                </div>                                
+                       
+
+                            </div> -->
+                              
+                  
+              
+                        </div> 
                         <!-- <div class="form-row">
-                          
+                            
                         </div> -->
-                         <div class="form-group ">
+                        <div class="form-group">
                                 <label class="col-form-label " for="spentTime">Spent Time <span class="text-danger">*</span></label>
 
                                 <Timepicker v-model="spentTimePicker"></Timepicker> 
 
                          </div>
+                         
                        
                        
                         <!-- <div class="row">
@@ -138,11 +167,13 @@
 
             </form>
             <br/>
-            <button class="btn btn-outline-primary " @click.prevent="submit">Submit  <i class="fa fa-save"></i></button>
+            <button class="btn btn-outline-primary " @click.prevent="submit" v-if="!activity.uploaded">Save  <i class="fa fa-save"></i></button>
              <!-- <button class="btn btn-outline-secondary btn-sm" @click.prevent="submit">Cancel  <i class="fa fa-ban"></i></button> -->
                  <router-link class="btn btn-outline-secondary " tag="button" :to="{ name: 'activity-list' }" >
                         <i class="fa fa-ban"></i> Cancel
               </router-link>
+
+
       </div>
     </div>
 
@@ -254,7 +285,7 @@
                   }
                     
                 });
-      },
+      },      
       setProjectFromKeyTarget(item){
         let vm = this;
         //console.log("svsdvsd", item);
@@ -303,7 +334,17 @@
         if(newVal!=oldVal){
           this.clearAllProjectRelatedProperties(newVal);
         }
-      }
+      },
+      "activity.task": function(newVal, oldVal){
+        if(newVal!=oldVal){
+           if(newVal){
+            let status = this.taskStatusOptions.find(it=>it.id==newVal.statusId)
+            this.activity.taskStatus = status;
+            }else{
+                this.activity.taskStatus = null;
+            }
+        }
+      },
     },
     data: function(){
       return {
@@ -348,6 +389,7 @@
           name: null,
           project:null,
           task:null,
+          taskStatus:null,
           keytarget:null,
           spentTime:0,
           date: new Date(),
@@ -381,11 +423,36 @@
             id:null,
             text:null
           },
-        }
+        },
+        taskStatusOptions:[
+          {id:1,text:"New"},
+          {id:2,text:"In progress"},
+          {id:3,text:"Resolved"},
+          {id:4,text:"Feedback"},
+          {id:5,text:"Closed"},
+          {id:6,text:"Rejected"},
+          {id:7,text:"Hold"},
+          {id:8,text:"ReDev"},
+          {id:9,text:"Success"},
+        ]
         
       };
 
     },
   }
 </script>
+<!--
+                               private final HashMap<Integer, String> statuses = new HashMap<Integer, String>() {{
+            put(1, "New");
+            put(2, "In progress");
+            put(3, "Resolved");
+            put(4, "Feedback");
+            put(5, "Closed");
+            put(6, "Rejected");
+            put(7, "Hold");
+            put(8, "ReDev");
+            put(9, "Success");
+            
+        }};
+                              -->
 

@@ -2,6 +2,20 @@ import api from '../api';
 import db from '../datastore';
 var log = require('electron-log');
 
+
+
+function sliceData(data, name){
+    let items = [];
+    if(data.length>1000){
+            //alert("Loaded more than 1000 elements!!!. only 1000 items will be saved")  ;
+            log.warn("Loaded more than 1000 elements of " + name + "!!! Only 1000 items will be saved");
+            items = data.slice(0,1000);
+    }else{
+        items = data;
+    }
+    return items;
+};
+
 export default {
 
     // setSyncTask(){
@@ -33,7 +47,9 @@ export default {
         db.keyTargets.remove({}, { multi: true }, function (err, numRemoved) {
         });
     },
+    
     loadAll(){
+
 
         api.getAllTasks().then(function(result){    
             
@@ -42,7 +58,9 @@ export default {
                     if(err){
                         log.error("error in tasks updating process (nedb deletion)", err);
                     }else{
-                        db.tasks.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "tasks");
+                        //console.log(items)
+                        db.tasks.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in tasks updating process (nedb insert)", err2);
                             }
@@ -64,7 +82,8 @@ export default {
                     if(err){
                         log.error("error in projects updating process (nedb deletion)", err);
                     }else{
-                        db.projects.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "projects");
+                        db.projects.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in projects updating process (nedb insert)", err2);
                             }
@@ -101,7 +120,8 @@ export default {
                     if(err){
                         log.error("error in deliverables updating process (nedb deletion)", err);
                     }else{
-                        db.deliverables.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "deliverables");
+                        db.deliverables.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in deliverables updating process (nedb insert)", err2);
                             }
@@ -122,7 +142,8 @@ export default {
                     if(err){
                         log.error("error in groupTasks updating process (nedb deletion)", err);
                     }else{
-                        db.groupTasks.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "groupTasks");
+                        db.groupTasks.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in groupTasks updating process (nedb insert)", err2);
                             }
@@ -143,7 +164,8 @@ export default {
                     if(err){
                         log.error("error in hypotesis updating process (nedb deletion)", err);
                     }else{
-                        db.hypotesis.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "hypotesis");
+                        db.hypotesis.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in hypotesis updating process (nedb insert)", err2);
                             }
@@ -164,7 +186,8 @@ export default {
                     if(err){
                         log.error("error in processes updating process (nedb deletion)", err);
                     }else{
-                        db.processes.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "processes");
+                        db.processes.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in processes updating process (nedb insert)", err2);
                             }
@@ -185,7 +208,8 @@ export default {
                     if(err){
                         log.error("error in requirements updating process (nedb deletion)", err);
                     }else{
-                        db.requirements.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "requirements");
+                        db.requirements.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in requirements updating process (nedb insert)", err2);
                             }
@@ -206,7 +230,8 @@ export default {
                     if(err){
                         log.error("error in supportTickets updating process (nedb deletion)", err);
                     }else{
-                        db.supportTickets.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "supportTickets");
+                        db.supportTickets.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in supportTickets updating process (nedb insert)", err2);
                             }
@@ -227,7 +252,8 @@ export default {
                     if(err){
                         log.error("error in taskActions updating process (nedb deletion)", err);
                     }else{
-                        db.taskActions.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "taskActions");
+                        db.taskActions.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in taskActions updating process (nedb insert)", err2);
                             }
@@ -248,7 +274,8 @@ export default {
                     if(err){
                         log.error("error in workOrders updating process (nedb deletion)", err);
                     }else{
-                        db.workOrders.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "workOrders");
+                        db.workOrders.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in workOrders updating process (nedb insert)", err2);
                             }
@@ -269,7 +296,8 @@ export default {
                     if(err){
                         log.error("error in keyTargets updating process (nedb deletion)", err);
                     }else{
-                        db.keyTargets.insert(result.data, function (err2) {
+                        let items = sliceData(result.data, "keyTargets");
+                        db.keyTargets.insert(items, function (err2) {
                             if(err2){
                                 log.error("error in keyTargets updating process (nedb insert)", err2);
                             }
@@ -282,5 +310,9 @@ export default {
         }).catch((err)=>{
             log.error("getAllKeyTargets exception", err);
         });
-    }
+    },
+
+    
+
+
 }

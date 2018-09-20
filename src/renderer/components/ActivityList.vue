@@ -51,8 +51,9 @@
                        
                            <div class="toolbar">
                                     <button v-show="item.active" class="btn btn-sm btn-outline-danger" @click.prevent="stopActivity(item)" title="Stop" ><i class="fa fa-stop"></i></button>
-                                    <button v-show="!item.active" class="btn btn-sm btn-outline-secondary" @click.prevent="startActivity(item)" title="Start" :disabled="item.uploaded"><i class="fa fa-play"></i></button>
-                                     <button class="btn btn-sm btn-outline-secondary" @click.prevent="editActivity(item._id)" :disabled="item.uploaded"> <i class="fa fa-edit" ></i>
+                                    <button v-show="!item.active && !item.uploaded" class="btn btn-sm btn-outline-secondary" @click.prevent="startActivity(item)" title="Start" ><i class="fa fa-play"></i></button>
+                                     <button class="btn btn-sm btn-outline-secondary" @click.prevent="editActivity(item._id)" v-show="!item.uploaded"> <i class="fa fa-edit" ></i></button>  
+                                     <button class="btn btn-sm btn-outline-secondary" @click.prevent="editActivity(item._id)" v-show="item.uploaded"> <i class="fa fa-eye" ></i>
                             </button>  
                                 </div>
                       </td>
@@ -65,6 +66,7 @@
         :can-cancel="false" 
         :is-full-page="true"></loading> -->
           <vue-element-loading :active="isLoading" is-full-screen/>
+          <errors-popup :show="showErrorsPopup" :error-items="activityErrors" @canceled="showErrorsPopup=false; activityErrors = [];"></errors-popup>
   </div>
 </template>
 
@@ -75,11 +77,12 @@
 import { setTimeout } from 'timers';
 import VueElementLoading from 'vue-element-loading';
 var log = require('electron-log');
+  import ErrorsPopup from './ActivityErrorsPopup';
 
   export default {
     name: 'activity-list',
 components: {
-    VueElementLoading
+    VueElementLoading, ErrorsPopup
   },
     beforeDestroy(){
          clearInterval(this.activeTask);
@@ -109,8 +112,9 @@ components: {
         isLoading:false,
        // allItemsSelected:false,
        // activeTime:null,
-        items: [] //[{id:1, name:"SomeName"}, {id:2, name:"SomeName2"},{id:3, name:"SomeName3"},{id:4, name:"SomeName4"}],
-
+        items: [], //[{id:1, name:"SomeName"}, {id:2, name:"SomeName2"},{id:3, name:"SomeName3"},{id:4, name:"SomeName4"}],
+        showErrorsPopup:false,
+        activityErrors:[],
       };
 
     },
@@ -141,24 +145,26 @@ components: {
         });
        
       },
-      async pushOne(act){
-        log.info("try to push activity to server ", act);
-        let vm = this;
+      async pushOne(act){       
+        let vm = this;        
         let sAct = {
                  projectId:act.project?act.project.id:null,
                  taskId:act.task?act.task.id:null,
+                 taskStatus:act.taskStatus?act.taskStatus.id:null,
                  spentTime:(act.spentTime/3600.00).toFixed(2),
                  name:act.name,
                  date:act.date,
+                 keytarget:act.keytarget?act.keytarget.id:null,
+                 overtime:act.overtime?act.overtime:false,
                  deliverableId:act.deliverable?act.deliverable.id:null,
                  requirementId:act.requirement?act.requirement.id:null,
                  processId:act.process?act.process.id:null,
                  problemId:act.problem?act.problem.id:null,
                  hypotesisId:act.hypotesis?act.hypotesis.id:null,
-                 workOrderId:act.workOrder?act.workOrder.id:null,
-               }
+                 workOrderId:act.workOrder?act.workOrder.id:null
+               };
              return api.createActivityOnServer(sAct).then(result=>{
-                  console.log(result);
+                  //console.log(result);
                   if(!result || !result.data){
                     throw new Error("No server result");
                   }
@@ -175,35 +181,54 @@ components: {
       },
       async pushAll(){
         let vm = this;
-          //vm.isLoading = true;
+
           for (const act of vm.items) {
              if(act.selected && !act.uploaded){
                try {
 
                  let res = await vm.pushOne(act);
 
-                 act.uploaded = res.uploaded;
-                 act.pmId = res.pmId;
-                 act.selected = false;
+                act.uploaded = res.uploaded;
+                act.pmId = res.pmId;
+                act.selected = false;
 
-                 let dbRes = await vm.saveToDb(act);
+                let dbRes = await vm.saveToDb(act);
                 
 
-               } catch (error) {
-                 console.log(error);
+               } catch (err) {
+                 log.warn(err);
+                  vm.activityErrors.push({
+                    activity:act,
+                    error:err.name + ": " + err.message 
+                  });
                }
 
              }
           }
 
+          if(vm.activityErrors.length>0)
+            throw new Error("Push Errors Occurred");
+
+          return ;
+
        
       },
       push(){
+
         let vm = this;
+
+        log.info("Pushing activities to server: ", vm.items.filter(a=>a.selected&&!a.uploaded));
+
         vm.isLoading = true;
+
         vm.pushAll().then(()=>{
           //vm.allItemsSelected = false;
             vm.isLoading = false;
+
+        }).catch(error=>{      
+             log.info("Erros on pushing activities to server: ", vm.activityErrors);
+            vm.isLoading = false;
+            vm.showErrorsPopup = true;
         });
 
       },
