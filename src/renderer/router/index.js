@@ -51,12 +51,38 @@ const  router =  new Router({
       }
     },
     {
+      path: '/taskCreatedByMeList',
+      name: 'task-created-by-me-list',
+      component: require('@/components/TaskCreatedByMeList').default ,
+      meta:{
+        private: true,
+      }     
+    },
+    {
       path: '/taskList',
       name: 'task-list',
       component: require('@/components/TaskList').default ,
       meta:{
         private: true,
       }     
+    },
+    {
+      path: '/taskCreate',
+      name: 'task-create',
+      component: require('@/components/TaskEdit').default,
+      //props:true,
+      meta:{
+        private: true,
+      }
+    },
+    {
+      path: '/taskEdit/:dbId',
+      name: 'task-edit',
+      component: require('@/components/TaskEdit').default,
+      props:true,
+      meta:{
+        private: true,
+      }
     },
     {
       path: '/projectList',
@@ -78,6 +104,14 @@ const  router =  new Router({
       path: '/problemList',
       name: 'problem-list',
       component: require('@/components/ProblemList').default  ,
+      meta:{
+        private: true,
+      }    
+    },
+    {
+      path: '/activitiesDeletedList',
+      name: 'activities-deleted-list',
+      component: require('@/components/DeletedActivityList').default  ,
       meta:{
         private: true,
       }    

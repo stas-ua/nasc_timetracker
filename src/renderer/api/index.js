@@ -24,7 +24,17 @@ const CREATE_ACTIVITY_URL = BASE_URL + ENDPOINT2 +'create_activity';
 
 const CREATE_TASK_URL = BASE_URL + ENDPOINT2 +'create_task';
 
+const GET_SPRINT_ITEMS = BASE_URL + ENDPOINT2 +'get_sprint_items';
+const GET_USERS = BASE_URL + ENDPOINT2 +'get_users';
+const GET_TASKS_CREATED_BY_ME = BASE_URL + ENDPOINT2 +'get_tasks_created_by_me';
+
 export default {
+
+    async createTaskOnServer(obj){
+        // console.log(store.state.user.token);
+        obj.token = store.state.user.token;
+        return axios.post(CREATE_TASK_URL, obj);
+    },
 
       async createActivityOnServer(activity){
           // console.log(store.state.user.token);
@@ -39,7 +49,31 @@ export default {
             }
             });
     },
-    getAllTasks(){
+    async getCreatedByMeTasks(){
+      // console.log(store.state.user.token);
+      return axios.get(GET_TASKS_CREATED_BY_ME, {
+          params: {
+            token: store.state.user.token//"f9Y4xvgNKv1dzzBfoF7m"
+          }
+          });
+  },
+    async getSprintItems(){
+      // console.log(store.state.user.token);
+      return axios.get(GET_SPRINT_ITEMS, {
+          params: {
+            token: store.state.user.token//"f9Y4xvgNKv1dzzBfoF7m"
+          }
+          });
+  },
+  async getUsers(){
+    // console.log(store.state.user.token);
+    return axios.get(GET_USERS, {
+        params: {
+          token: store.state.user.token//"f9Y4xvgNKv1dzzBfoF7m"
+        }
+        });
+},
+    async getAllTasks(){
        // console.log(store.state.user.token);
         return axios.get(GET_ALL_TASKS_URL, {
             params: {

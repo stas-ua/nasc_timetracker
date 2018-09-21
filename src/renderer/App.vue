@@ -15,7 +15,12 @@
           </li>
           <li class="nav-item">
              <router-link class="nav-link" tag="a" :to="{ path: '/taskList' }" >
-                        <i class="fa fa-bars"></i> Tasks
+                        <i class="fa fa-bars"></i> My Tasks
+              </router-link>
+          </li>
+          <li class="nav-item">
+             <router-link class="nav-link" tag="a" :to="{ path: '/taskCreatedByMeList' }" >
+                        <i class="fa fa-bars"></i> Tasks Created By Me
               </router-link>
           </li>
           <li class="nav-item dropdown">
@@ -31,12 +36,20 @@
               <router-link class="dropdown-item" tag="a" :to="{ path: '/problemList' }" >
                         <i class="fa fa-exclamation"></i> Problems
               </router-link>
+              <router-link class="dropdown-item" tag="a" :to="{ path: '/activitiesDeletedList' }" >
+                        <i class="fa fa-rocket"></i> Old Activities
+              </router-link>
             </div>
           </li>
        
         </ul>
         <div>
-          <ul class="navbar-nav mr-auto" >
+        <ul class="navbar-nav mr-auto" >
+           <li class="nav-item ">
+             <a class="nav-link" href="#" @click.prevent="downloadData" >
+                        <i class="fa fa-cloud-download"></i> Load Data
+              </a>
+          </li>
           <li class="nav-item ">
              <a class="nav-link" href="#" @click.prevent="removeAll" >
                         <i class="fa fa-trash"></i> Clear Store
@@ -72,9 +85,9 @@
       </div>
 
       <footer class="footer fixed-bottom">
-      <div class="d-flex justify-content-between">
+      <div class="d-flex justify-content-between mr-3 ml-3">
         <span class="text-muted">Version: {{version}}</span>
-        <span> {{footerMsg}} </span>
+        <span v-if="activeActivity" class="text-danger"> {{activeActivity.name}} : {{activeActivitySpentTime}} </span>
       </div>
     </footer>
     
@@ -88,8 +101,10 @@ import api from './api';
 import sync from './service/syncService';
 //const {app} = require('electron').remote;
 import {version} from '../../package.json';
+import {toHHMMSS} from './common/util';
 const {ipcRenderer} = require('electron');
 var log = require('electron-log');
+
 
 
 
@@ -112,6 +127,12 @@ var log = require('electron-log');
               return true;
           else
               return false;
+        },
+        activeActivity(){
+           return this.$store.state.activity.activeActivity;
+        },
+        activeActivitySpentTime(){
+          return toHHMMSS(this.$store.state.activity.activeActivity.spentTime);
         }
     },
     methods: {
@@ -125,42 +146,9 @@ var log = require('electron-log');
       removeAll(){
         sync.removeAll();
       },
-      loadTasks (link) {
+      downloadData () {
          let vm = this;
-         api.getAllTasks().then(function(result){
-            console.log("Tasks updated",result.data);
-            result.data.forEach(element => {
-              vm.$db.tasks.update(element, element, { upsert: true }, function (err, numReplaced, upsert) {
-                // numReplaced = 1, upsert = { _id: 'id5', planet: 'Pluton', inhabited: false }
-                // A new document { _id: 'id5', planet: 'Pluton', inhabited: false } has been added to the collection
-              });
-            });
-        }
-         );
-        //  let url =   "http://pm.nasctech.com/api/v1/custom_objects/timetracker/get_tasks";
-   
-        // axios.get(url, {
-        //   params: {
-        //     token:"f9Y4xvgNKv1dzzBfoF7m"
-        //   }
-        //   }).then(function(result){
-        //     // console.log(result);
-        //     // vm.$db.tasks.insert(result.data, function (err, newDocs) {
-        //     //     console.log(newDocs);
-        //     //   });
-        //     //  vm.items = result.data;
-        //     //  // Removing all documents with the 'match-all' query
-        //     // vm.$db.tasks.remove({}, { multi: true }, function (err, numRemoved) {
-
-        //     // });
-        //     console.log("Tasks updated",result.data);
-        //     result.data.forEach(element => {
-        //       vm.$db.tasks.update(element, element, { upsert: true }, function (err, numReplaced, upsert) {
-        //         // numReplaced = 1, upsert = { _id: 'id5', planet: 'Pluton', inhabited: false }
-        //         // A new document { _id: 'id5', planet: 'Pluton', inhabited: false } has been added to the collection
-        //       });
-        //     });
-        // });
+         sync.loadAll();
       }
     }
   }

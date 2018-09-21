@@ -40,7 +40,8 @@
                                             :value="activity.date"
                                             :clear-button="true"
                                             :calendar-button="true"
-                                            calendar-button-icon="fa fa-calendar"></datepicker>
+                                            calendar-button-icon="fa fa-calendar"
+                                            :disabledDates="disabledDates"></datepicker>
                                 <span v-if="errors.first('date')" class="text-danger">{{ errors.first('date') }}</span>
                             </div>
                                        
@@ -204,6 +205,8 @@
  import Datepicker from 'vuejs-datepicker';
   import SelectItemPopup from './SelectItemPopup';
   import Timepicker from './TimePicker';
+   import {toHHMMSSObj} from '../common/util';
+  var log = require('electron-log');
 
   export default {
     components:{Datepicker, SelectItemPopup, Timepicker},
@@ -233,8 +236,15 @@
 
           }
         },
+
+      
     },
     methods: {
+      disabledDates(){ 
+        return {   
+          from: new Date() //new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+        };
+      },
       submit () {
         let vm = this;
         vm.$validator.validateAll().then((result) => {
@@ -311,23 +321,7 @@
         }
         
       },
-      toHHMMSS  (s) {
-          var sec_num = s; 
-          var hours   = Math.floor(sec_num / 3600);
-          var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-          var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-          // if (hours   < 10) {hours   = "0"+hours;}
-          // if (minutes < 10) {minutes = "0"+minutes;}
-          // if (seconds < 10) {seconds = "0"+seconds;}
-           //return hours + ':' + minutes + ':' + seconds
-          return {
-             hours,
-              minutes,
-              seconds
-            };
-      }
-
+      toHHMMSS:toHHMMSSObj
     },
     watch:{
       "activity.project": function(newVal, oldVal){
@@ -441,18 +435,5 @@
     },
   }
 </script>
-<!--
-                               private final HashMap<Integer, String> statuses = new HashMap<Integer, String>() {{
-            put(1, "New");
-            put(2, "In progress");
-            put(3, "Resolved");
-            put(4, "Feedback");
-            put(5, "Closed");
-            put(6, "Rejected");
-            put(7, "Hold");
-            put(8, "ReDev");
-            put(9, "Success");
-            
-        }};
-                              -->
+
 

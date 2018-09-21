@@ -10,7 +10,7 @@ const state = {
 
 const mutations = {
   SET_SYNC_TASK (state, payload) {
-    state.syncTaskId = setInterval(sync.loadAll,30000);
+    state.syncTaskId = setInterval(sync.loadAll,1000*60*5); //5min
   },
   RESET_SYNC_TASK (state) {
     clearInterval(state.syncTaskId);

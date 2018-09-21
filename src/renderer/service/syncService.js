@@ -46,9 +46,61 @@ export default {
         });
         db.keyTargets.remove({}, { multi: true }, function (err, numRemoved) {
         });
+        db.users.remove({}, { multi: true }, function (err, numRemoved) {
+        });
+        db.sprintItems.remove({}, { multi: true }, function (err, numRemoved) {
+        });
     },
     
     loadAll(){
+
+        api.getUsers().then(function(result){    
+            
+            if(result && result.data ){
+                db.users.remove({}, { multi: true }, function (err, numRemoved) {
+                    if(err){
+                        log.error("error in users updating process (nedb deletion)", err);
+                    }else{
+                        let items = sliceData(result.data, "users");
+                        //console.log(items)
+                        db.users.insert(items, function (err2) {
+                            if(err2){
+                                log.error("error in users updating process (nedb insert)", err2);
+                            }
+                            
+                        });
+                    }
+                    
+                });
+           }
+            
+        }).catch((err)=>{
+            log.error("getusers exception", err);
+        });
+
+        api.getSprintItems().then(function(result){    
+            
+            if(result && result.data ){
+                db.sprintItems.remove({}, { multi: true }, function (err, numRemoved) {
+                    if(err){
+                        log.error("error in sprintItems updating process (nedb deletion)", err);
+                    }else{
+                        let items = sliceData(result.data, "sprintItems");
+                        //console.log(items)
+                        db.sprintItems.insert(items, function (err2) {
+                            if(err2){
+                                log.error("error in sprintItems updating process (nedb insert)", err2);
+                            }
+                            
+                        });
+                    }
+                    
+                });
+           }
+            
+        }).catch((err)=>{
+            log.error("get sprintItems exception", err);
+        });
 
 
         api.getAllTasks().then(function(result){    
@@ -311,6 +363,38 @@ export default {
             log.error("getAllKeyTargets exception", err);
         });
     },
+
+    async loadTasks(){
+       let result = await api.getAllTasks();
+       return new Promise(function(resolve,reject){
+
+        if(result && result.data ){
+            db.tasks.remove({}, { multi: true }, function (err, numRemoved) {
+                        if(err){
+                            log.error("error in tasks updating process (nedb deletion)", err);
+                            resolve();
+                        }else{
+                            let items = sliceData(result.data, "tasks");
+                            //console.log(items)
+                            db.tasks.insert(items, function (err2) {
+                                if(err2){
+                                    log.error("error in tasks updating process (nedb insert)", err2);
+                                }
+                                resolve();
+                                
+                            });
+                        }
+                        
+                    });
+            }else{
+                resolve();
+            }
+
+       });          
+            
+            
+      
+    }
 
     
 
