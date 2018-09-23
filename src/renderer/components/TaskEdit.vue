@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between mb-2">
       <h5>{{dbId?'Edit Task':'Create Task'}}
     </h5>
-    <router-link  tag="a" :to="{ name: 'task-list' }" >
+    <router-link  tag="a" :to="{ name: 'task-created-by-me-list' }" >
                         <i class="fa fa-share"></i> Back To Task List
               </router-link>
     
@@ -88,6 +88,24 @@
                   
               
                         </div> 
+                        <div class="form-row">                  
+
+                            <div class="form-group col-sm-6">
+                                <label class="col-form-label " for="deliverable">Deliverable </label>
+                                
+                                <div class="input-group ">
+                                  <input  name="deliverable"   type="text" class="form-control "  :value="task.deliverable?task.deliverable.name:''" readonly  aria-describedby="button-addon_deliverable">
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_deliverable" @click.prevent="deliverablePopupParam.show=true">...</button>
+                                  </div>
+                                </div>   
+
+                            </div>  
+                          
+                              
+                  
+              
+                        </div> 
                            <div class="form-row">                          
                             <div class="form-group col-sm">
                                 <label class="col-form-label " for="startDate">Day Start<span class="text-danger">*</span></label>
@@ -146,11 +164,11 @@
                       
                         <div class="form-row">
                             <div class="form-group col">
-                                <label class="col-form-label " for="decription">Description <span class="text-danger">*</span></label>
+                                <label class="col-form-label " for="description">description <span class="text-danger">*</span></label>
 
-                                <textarea v-validate="'required'" name="decription" class="form-control " v-model="task.decription" type="text"  placeholder="Type Description For The Task..">
+                                <textarea v-validate="'required'" name="description" class="form-control " v-model="task.description" type="text"  placeholder="Type Description For The Task..">
                                 </textarea>
-                                <span v-if="errors.first('decription')" class="text-danger">{{ errors.first('decription') }}</span>
+                                <span v-if="errors.first('description')" class="text-danger">{{ errors.first('description') }}</span>
                     
 
                             </div>
@@ -201,6 +219,12 @@
          @canceled="projectPopupParam.show=false;"></select-item-popup>
 
           <select-item-popup 
+         key="deliverablePopup"
+         v-bind="deliverablePopupParam"
+         @itemSelected="selectItem(deliverablePopupParam, $event); " 
+         @canceled="deliverablePopupParam.show=false;"></select-item-popup>
+
+          <select-item-popup 
          key="keytargetPopup"
          v-bind="keytargetPopupParam"
          @itemSelected="selectItem(keytargetPopupParam, $event); " 
@@ -229,11 +253,39 @@
     created(){
       let vm = this;
      // console.log(this.dbId);
-      if(this.dbId){
-         vm.$db.task.findOne({_id:this.dbId}, function (err, doc) {
-                //console.log(doc);
-                vm.task = doc;                
-              });
+      if(vm.dbId){
+        //  vm.$db.tasks.findOne({_id:this.dbId}, function (err, doc) {
+        //         //console.log(doc);
+        //         if(doc)
+        //            vm.task = doc;                
+        //       });
+        //this.task = this.updatedTask;
+        vm.isLoading = true;
+        api.getTask(vm.dbId).then(result=>{
+             if(result && result.data && result.data.length ){
+                 let t = result.data[0];
+                 if(t.id == vm.dbId){
+                   vm.setTaskFromServerModel(t) ;
+                    vm.isLoading = false;
+                 }else{
+                    log.warn("getTask by id retun task with not the same id");
+                    vm.isLoading = false;
+                    alert("An error ocurred while loading task from server");
+                    vm.quite();
+                 }
+                  
+              }else{
+                log.error("No result from server");
+                vm.isLoading = false;
+                 alert("An error ocurred while loading task from server");
+                    vm.quite();
+              }
+        }).catch(err=>{
+            log.error("Error in getTask func", err);
+            vm.isLoading = false;
+             alert("An error ocurred while loading task from server");
+                    vm.quite();
+        });
       }
     },
     computed:{     
@@ -245,6 +297,37 @@
       }
     },
     methods: {
+      setTaskFromServerModel(t){
+        //console.log(t)
+         let tstatus = null;
+         this.task.id = t.id;
+          if(t.status && t.status.id)
+            this.task.status  = this.taskStatusOptions.find(x=>x.id==t.status.id);
+            else
+            this.task.status = null;
+
+          this.task.name = t.name;
+          this.task.project = t.project;
+          this.task.sprintItem = t.sprintItem;
+          this.task.keytarget = t.keytarget;
+          this.task.deliverable = t.deliverable;
+          this.task.executor = t.executor;
+          if(t.startDate)
+            this.task.startDate = new Date(t.startDate);
+          else
+            this.task.startDate = null;
+          if(t.endDate)
+            this.task.endDate = new Date(t.endDate);
+          else
+             this.task.endDate = null;
+
+          this.task.estimation = t.estimation;
+          this.task.description = t.description;
+        //  this.task.status = t.status;
+          // console.log (this.task)
+
+          
+      },
       submit () {
         let vm = this;
         vm.$validator.validateAll().then((result) => {
@@ -261,7 +344,10 @@
           }).then((result)=>{
            
               vm.isLoading = false;
-              alert("Task Created");
+              if(vm.dbId)
+                alert("Task Updated");
+              else
+                alert("Task Created");
               vm.quite();
 
           }).catch(err=>{
@@ -286,7 +372,7 @@
       },
        async createOnServer(task){       
         let vm = this;        
-        let servTask = {
+        let servTask = {                  
                  project:task.project?task.project.id:null,
                  executor:task.executor?task.executor.id:null,
                  taskStatus:task.status?task.status.id:null,
@@ -299,6 +385,9 @@
                  sprintItem:task.sprintItem?task.sprintItem.id:null,
                  deliverable:task.deliverable?task.deliverable.id:null,
                };
+        if(this.task.id)
+            servTask.taskId = this.task.id;
+            
         return api.createTaskOnServer(servTask).then(result=>{
             //console.log(result);
             if(!result || !result.data){
@@ -415,7 +504,18 @@
               {key:"name", caption:"Key Target", searchable:true}
             ],
             filter:{},
-        },    
+        },   
+        deliverablePopupParam:{
+          show:false,
+          collectionName:"deliverables",
+          editedPropertyName:"deliverable",
+          columnsConfig:[
+              {key:"id", caption:"Id"}, 
+              {key:"name", caption:"Name", searchable:true}
+            ],
+            filter:{},
+        },       
+
         task:{
           
           name: null,
@@ -427,7 +527,7 @@
           estimation:0.0,
           startDate: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
           endDate: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000 ),
-          decription:null,
+          description:null,
           status:{id:1,text:"New"},
           //createdBy:0,
           //uploaded:false,

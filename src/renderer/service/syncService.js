@@ -6,10 +6,11 @@ var log = require('electron-log');
 
 function sliceData(data, name){
     let items = [];
-    if(data.length>1000){
+    if(data.length>7000){
+
             //alert("Loaded more than 1000 elements!!!. only 1000 items will be saved")  ;
-            log.warn("Loaded more than 1000 elements of " + name + "!!! Only 1000 items will be saved");
-            items = data.slice(0,1000);
+            log.warn("Loaded more than 7000 elements of " + name + "!!! Only 7000 items will be saved");
+            items = data.slice(0,7000);
     }else{
         items = data;
     }
@@ -148,6 +149,29 @@ export default {
             
         }).catch((err)=>{
             log.error("getAllProjects exception", err);
+        });
+
+        api.getAllProblems().then(function(result){   
+            
+            if(result && result.data ){
+                db.problems.remove({}, { multi: true }, function (err, numRemoved) {
+                    if(err){
+                        log.error("error in problems updating process (nedb deletion)", err);
+                    }else{
+                        let items = sliceData(result.data, "problems");
+                        db.problems.insert(items, function (err2) {
+                            if(err2){
+                                log.error("error in problems updating process (nedb insert)", err2);
+                            }
+                            
+                        });
+                    }
+                    
+                });
+           }
+            
+        }).catch((err)=>{
+            log.error("getAllProblems exception", err);
         });
 
         // api.getAllProblems().then(function(result){            

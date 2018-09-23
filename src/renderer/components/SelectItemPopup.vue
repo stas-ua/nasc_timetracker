@@ -1,6 +1,6 @@
 <template>
 
-  <b-modal   v-model="show"  :no-close-on-backdrop="true" :no-close-on-esc="true" size="md" >
+  <b-modal   v-model="show"  :no-close-on-backdrop="true" :no-close-on-esc="true" size="lg" >
     <div slot="modal-header" class="w-100">
       <div class="d-flex justify-content-between">
         <h4>{{collectionName}}</h4>

@@ -1,8 +1,9 @@
 <template>
   <div>
-    <!-- <img id="logo" src="~@/assets/logo.png" alt="electron-vue"> -->
-    <h5 class="d-flex justify-content-between mb-3">Activities 
-      <!-- <span class="text-danger " v-if="activeActivity">Current Activity Time: {{activeActivity? toHHMMSS(activeActivity.spentTime):''}}</span> -->
+   
+    <div class="d-flex justify-content-between mb-3">
+    <h5 >Activities </h5>
+         <!-- <span class="text-danger " v-if="activeActivity">Current Activity Time: {{activeActivity? toHHMMSS(activeActivity.spentTime):''}}</span> -->
       <div>
           <button class="btn btn-sm btn-outline-danger" @click.prevent="deleteSelected">
                 <i class="fa fa-trash"></i> Delete
@@ -14,18 +15,10 @@
                 <i class="fa fa-plus"></i> Add
               </button>
       </div>
-      
-    </h5>
-    <!-- <div class="d-flex justify-content-end mb-3">
-       
-              
-    </div> -->
 
-     <!-- <div class="row">
-      <div class="col">
-           {{activeActivity? activeActivity.spentTime:''}}
-      </div>
-    </div> -->
+    </div>
+
+  
     <div class="row">
       <div class="col">
            <table class="table table-hover table-sm">

@@ -95,7 +95,7 @@
           this.$router.push({ name: 'task-create' });
       },
       editTask(item){
-        this.$router.push({ path: `/taskEdit/${item._id}` });
+        this.$router.push({ path: `/taskEdit/${item.id}` });
       }
     }
   }
