@@ -45,11 +45,7 @@
         </ul>
         <div>
         <ul class="navbar-nav mr-auto" >
-           <li class="nav-item ">
-             <a class="nav-link" href="#" @click.prevent="getToken" >
-                        <i class="fa fa-sign-in"></i> Get Token
-              </a>
-          </li>
+       
            <li class="nav-item ">
              <a class="nav-link" href="#" @click.prevent="downloadData" >
                         <i class="fa fa-cloud-download"></i> Load Data
