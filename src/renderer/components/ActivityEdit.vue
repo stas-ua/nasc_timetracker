@@ -388,6 +388,11 @@
                 vm.activity = doc;                
               });
       }
+      vm.keytargetPopupParam.filter = {
+        user:vm.$store.state.user.customUserId,
+        set_by:vm.$store.state.user.systemUserId,
+      };
+
     },
     computed:{
    
@@ -637,7 +642,7 @@
               {key:"projectName", caption:"Project", searchable:true},
               {key:"name", caption:"Key Target", searchable:true}
             ],
-            filter:{},
+            filter:{ user:null, set_by:null },
         }, 
          deliverablePopupParam:{
           show:false,

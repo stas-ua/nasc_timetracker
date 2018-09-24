@@ -46,6 +46,11 @@
         <div>
         <ul class="navbar-nav mr-auto" >
            <li class="nav-item ">
+             <a class="nav-link" href="#" @click.prevent="getToken" >
+                        <i class="fa fa-sign-in"></i> Get Token
+              </a>
+          </li>
+           <li class="nav-item ">
              <a class="nav-link" href="#" @click.prevent="downloadData" >
                         <i class="fa fa-cloud-download"></i> Load Data
               </a>
@@ -102,6 +107,8 @@ import sync from './service/syncService';
 //const {app} = require('electron').remote;
 import {version} from '../../package.json';
 import {toHHMMSS} from './common/util';
+
+
 const {ipcRenderer} = require('electron');
 var log = require('electron-log');
 
@@ -136,6 +143,11 @@ var log = require('electron-log');
         }
     },
     methods: {
+      getToken(){
+        //console.log(getToken);
+        
+
+      },
       logOut(){
            let vm = this;
            vm.$store.dispatch("logOut")

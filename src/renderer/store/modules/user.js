@@ -4,17 +4,22 @@ const userKey = "user";
 const state = {
   login: null,
   token:null,
-
+  systemUserId:null,
+  customUserId:null
 }
 
 const mutations = {
   SET_USER (state, payload) {
     state.login = payload.login;
     state.token = payload.token;
+    state.systemUserId = payload.systemUserId;
+    state.customUserId = payload.customUserId;
   },
   RESET_USER (state) {
     state.login = null;
     state.token = null;
+    state.systemUserId = null;
+    state.customUserId = null;
   }
 }
 

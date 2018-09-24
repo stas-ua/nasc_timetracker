@@ -152,7 +152,7 @@ import _ from "lodash";
         let vm = this;        
         
         if(val){          
-         // console.log("in popup show", this.collectionName);
+          //console.log(vm.filter);
           vm.$db[this.collectionName].find(vm.filter).limit(100).exec( function (err, doc) {
                  // console.log(doc);
                   vm.items = doc;
