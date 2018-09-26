@@ -83,15 +83,19 @@
           </div>
       
         </div>
-      </div>
+    </div>
 
-      <footer class="footer fixed-bottom">
+    <footer class="footer fixed-bottom">
       <div class="d-flex justify-content-between mr-3 ml-3">
-        <span class="text-muted">Version: {{version}}</span>
+        <span>           
+           <span class="text-muted mr-3" >Version: {{version}}</span>
+           <span class="text-muted " >{{messageState}}</span>
+        </span>
+        
         <span v-if="activeActivity" class="text-danger"> {{activeActivity.name}} : {{activeActivitySpentTime}} </span>
       </div>
     </footer>
-    
+    <vue-element-loading :active="isLoading" is-full-screen/>
  
   </div>
 </template>
@@ -103,7 +107,7 @@ import sync from './service/syncService';
 //const {app} = require('electron').remote;
 import {version} from '../../package.json';
 import {toHHMMSS} from './common/util';
-
+import VueElementLoading from 'vue-element-loading';
 
 const {ipcRenderer} = require('electron');
 var log = require('electron-log');
@@ -113,6 +117,7 @@ var log = require('electron-log');
 
   export default {
     name: 'timetracker',
+    components:{VueElementLoading},
     data: function(){
       return {
         version : version,
@@ -125,6 +130,12 @@ var log = require('electron-log');
         log.info("App started ", vm.$store.state.user.login);
     },
     computed: {
+        isLoading(){
+           return this.$store.state.common.loading;
+        },
+        messageState(){
+           return this.$store.state.common.messageState;
+        },
         isAuthentificated(){
           if(this.$store.state.user && this.$store.state.user.token)
               return true;
@@ -156,7 +167,12 @@ var log = require('electron-log');
       },
       downloadData () {
          let vm = this;
-         sync.loadAll();
+        // sync.loadAll();
+        vm.$store.dispatch("setLoading");
+        sync.reloadAllAsync().then(results=>{
+          vm.$store.dispatch("resetLoading");
+          alert("Data loaded");
+        });
       }
     }
   }
@@ -168,11 +184,11 @@ var log = require('electron-log');
   padding-top: 4em;
   
 }
-@media (max-width: 979px) {
+/* @media (max-width: 979px) {
   body {
     padding-top: 0px;
   }
-}
+} */
 #appcontent{
   margin-bottom: 30px;
 }

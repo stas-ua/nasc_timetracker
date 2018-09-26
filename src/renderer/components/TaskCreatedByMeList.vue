@@ -15,9 +15,10 @@
               <thead>
                   <tr>
                       <th>id</th>
+                       <th>Project</th>
                       <th>Name</th>
                       <th>Priority</th>
-                      <th>ProjectId</th>
+                      <th>End Day</th>
                       <th>
                       </th>
                   </tr>
@@ -25,9 +26,10 @@
               <tbody>
                   <tr :key="item.id" v-for="(item) in items">
                       <td>{{item.id}}</td>
+                      <td>{{item.project_name}}</td> 
                       <td>{{item.name}}</td>                            
                       <td>{{item.priority}}</td>   
-                      <td>{{item.project_id}}</td> 
+                       <td>{{item.endDay|formatDate}}</td>   
                       <td>
 
                          
@@ -57,7 +59,9 @@
       let vm = this;
 
       api.getCreatedByMeTasks().then(result=>{
-         if(result && result.data ){
+        //console.log(result);
+         if(result && result.data && result.data.length){
+            result.data.sort((a,b) => (a.id > b.id) ? -1 : ((b.id > a.id) ? 1 : 0));
             vm.items = result.data ;
          }else{
            log.error("No result from server");

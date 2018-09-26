@@ -2,7 +2,11 @@
   <div>
    
     <div class="d-flex justify-content-between mb-3">
-    <h5 >Activities </h5>
+      <div class="d-flex">
+           <h5 class="mr-3">Activities </h5>
+            <span class="" :class="{'text-danger':isTimerRunning}" >Total Spent: {{totalSpent}}</span>
+      </div>
+   
          <!-- <span class="text-danger " v-if="activeActivity">Current Activity Time: {{activeActivity? toHHMMSS(activeActivity.spentTime):''}}</span> -->
       <div>
           <button class="btn btn-sm btn-outline-danger" @click.prevent="deleteSelected">
@@ -129,6 +133,17 @@ components: {
       },
       isTimerRunning(){
         return this.$store.state.activity.timerTaskId!=null;
+      },
+      totalSpent(){
+       // let actSpenttime = vm.activeActivity.spentTime;
+      let vm = this;
+            return toHHMMSS(vm.items.reduce((accum, curr, i)=>{
+              if(vm.activeActivity && curr._id==vm.activeActivity._id)
+                return accum;
+              else
+              return accum + curr.spentTime;
+            },vm.activeActivity? vm.activeActivity.spentTime:0.0));
+      
       }
     },
     methods: {

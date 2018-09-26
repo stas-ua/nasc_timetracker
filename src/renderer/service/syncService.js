@@ -1,7 +1,8 @@
 import api from '../api';
 import db from '../datastore';
+import dbService from './dbService';
 var log = require('electron-log');
-
+import store from '../store';
 
 
 function sliceData(data, name){
@@ -51,6 +52,9 @@ export default {
         });
         db.sprintItems.remove({}, { multi: true }, function (err, numRemoved) {
         });
+    },
+    reloadAll(){
+
     },
     
     loadAll(){
@@ -388,6 +392,395 @@ export default {
         });
     },
 
+    async reloadAllAsync(){
+        return await Promise.all([
+            this.loadUsersAsync(),
+            this.loadKeyTargetsAsync(),
+            this.loadSprintItemsAsync(),
+            this.loadTasksAsync(),
+            this.loadProjectsAsync(),
+            this.loadProblemsAsync(),
+            this.loadRequirementsAsync(),
+            this.loadWorkOrdersAsync(),
+            this.loadSupportTicketsAsync(),
+            this.loadTaskActionsAsync(),
+            this.loadHypotesisAsync(),
+            this.loadProcessesAsync(),
+            this.loadGroupTasksAsync(),
+            this.loadDeliverablesAsync(),
+          ]).then(results=>{            
+            store.dispatch("updateDataLoadingDate");
+            return results;
+          });
+    },
+    async loadUsersAsync(){
+
+        let dbName = "users";
+
+        try{
+
+            let result = await api.getUsers();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+
+            console.log(dbName + " loaded");
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadKeyTargetsAsync(){
+
+        let dbName = "keyTargets";
+
+        try{
+
+            let result = await api.getAllKeyTargets();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            //console.log(dbName + " loaded");
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadSprintItemsAsync(){
+
+        let dbName = "sprintItems";
+
+        try{
+
+            let result = await api.getSprintItems();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);            
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadTasksAsync(){
+
+        let dbName = "tasks";
+
+        try{
+
+            let result = await api.getAllTasks();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadProjectsAsync(){
+
+        let dbName = "projects";
+
+        try{
+
+            let result = await api.getAllProjects();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadProblemsAsync(){
+
+        let dbName = "problems";
+
+        try{
+
+            let result = await api.getAllProblems();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadRequirementsAsync(){
+
+        let dbName = "requirements";
+
+        try{
+
+            let result = await api.getAllRequirements();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadWorkOrdersAsync(){
+
+        let dbName = "workOrders";
+
+        try{
+
+            let result = await api.getAllWorkOrders();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadSupportTicketsAsync(){
+
+        let dbName = "supportTickets";
+
+        try{
+
+            let result = await api.getAllSupportTickets();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadTaskActionsAsync(){
+
+        let dbName = "taskActions";
+
+        try{
+
+            let result = await api.getAllTaskActions();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadHypotesisAsync(){
+
+        let dbName = "hypotesis";
+
+        try{
+
+            let result = await api.getAllHypotesis();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadProcessesAsync(){
+
+        let dbName = "processes";
+
+        try{
+
+            let result = await api.getAllProcesses();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadGroupTasksAsync(){
+
+        let dbName = "groupTasks";
+
+        try{
+
+            let result = await api.getAllGroupTasks();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+    async loadDeliverablesAsync(){
+
+        let dbName = "deliverables";
+
+        try{
+
+            let result = await api.getAllDeliverables();
+            let items = [];
+                
+            if(!(result && result.data && result.data.length > 0)){            
+                 throw new Error("Server does not return data for "  + dbName);
+            }else{
+                items = sliceData(result.data, dbName);            
+            }               
+
+            let remCount = await dbService.removeItemsAsync(dbName);
+            let res = await dbService.insertItemsAsync(dbName, items);
+            store.dispatch("setMessageState", dbName + " loaded");
+            return items;
+
+        }catch(err){
+            log.error("Exception in get "+ dbName + " method.", err);
+            store.dispatch("setMessageState","Error during loading " + dbName );
+            return null;
+        }
+    },
+
     async loadTasks(){
        let result = await api.getAllTasks();
        return new Promise(function(resolve,reject){
@@ -414,7 +807,7 @@ export default {
                 resolve();
             }
 
-       });          
+       });      
             
             
       

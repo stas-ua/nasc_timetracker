@@ -42,7 +42,7 @@
 
                             </div> 
                              <div class="form-group col-sm">
-                                <label class="col-form-label " for="sprintItem">Sprint Item <span class="text-danger">*</span></label>
+                                <label class="col-form-label " for="sprintItem">Sprint Item </label>
 
                                 
                               <div class="input-group">
@@ -108,7 +108,7 @@
                         </div> 
                            <div class="form-row">                          
                             <div class="form-group col-sm">
-                                <label class="col-form-label " for="startDate">Day Start<span class="text-danger">*</span></label>
+                                <label class="col-form-label " for="startDate">Day Start <span class="text-danger">*</span></label>
                                 <datepicker name="startDate" v-validate="'required'" :bootstrap-styling="true"
                                             format="dd/MM/yyyy"
                                             v-model="task.startDate"
@@ -120,8 +120,8 @@
                                 <span v-if="errors.first('startDate')" class="text-danger">{{ errors.first('startDate') }}</span>
                             </div>
                              <div class="form-group col-sm">
-                                <label class="col-form-label " for="endDate">Day End<span class="text-danger">*</span></label>
-                                <datepicker name="endDate" v-validate="'required'" :bootstrap-styling="true"
+                                <label class="col-form-label " for="endDate">Day End</label>
+                                <datepicker name="endDate"  :bootstrap-styling="true"
                                             format="dd/MM/yyyy"
                                             v-model="task.endDate"
                                             :value="task.endDate"
@@ -129,7 +129,7 @@
                                             :calendar-button="true"
                                             calendar-button-icon="fa fa-calendar"
                                             ></datepicker>
-                                <span v-if="errors.first('endDate')" class="text-danger">{{ errors.first('endDate') }}</span>
+                                <!-- <span v-if="errors.first('endDate')" class="text-danger">{{ errors.first('endDate') }}</span> -->
                             </div>
                                        
               
@@ -148,7 +148,7 @@
                             </div>  
                             
                              <div class="form-group col-sm-6">
-                                <label class="col-form-label " for="estimation">Duration</label>                                
+                                <label class="col-form-label " for="estimation">Duration  <span class="text-danger">*</span></label>                                
                                 <input v-validate="'required|min_value:0.1'" name="estimation"  v-model="task.estimation" class="form-control " type="number" step="0.01" min="0.1"> 
                                  <!-- step="0.01" min="0" -->
                                    <span v-if="errors.first('estimation')" class="text-danger">{{ errors.first('estimation') }}</span>    
@@ -164,7 +164,7 @@
                       
                         <div class="form-row">
                             <div class="form-group col">
-                                <label class="col-form-label " for="description">description <span class="text-danger">*</span></label>
+                                <label class="col-form-label " for="description">Description <span class="text-danger">*</span></label>
 
                                 <textarea v-validate="'required'" name="description" class="form-control " v-model="task.description" type="text"  placeholder="Type Description For The Task..">
                                 </textarea>
@@ -466,7 +466,7 @@
           collectionName:"users",
           editedPropertyName:"executor",
           columnsConfig:[
-              {key:"id", caption:"Id"}, 
+              {key:"short", caption:"Acronym", searchable:true}, 
               {key:"name", caption:"Name", searchable:true},
               {key:"email", caption:"Email", searchable:true}
             ],

@@ -47,7 +47,24 @@
       open () {
         
       }
-    }
+    },
+    computed:{
+        lastUpdatedDate(){          
+           return this.$store.state.common.lastUpdatedDate;        
+        }
+    },
+    watch:{
+        lastUpdatedDate(newD,oldD){
+          let vm = this;
+          if(newD)
+            {
+              vm.$db.tasks.find({}).sort({id:-1}).exec(function (err, docs) {
+                    vm.items = docs;
+                  });
+            }
+
+        },
+    },
   }
 </script>
 

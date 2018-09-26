@@ -20,21 +20,21 @@
                 <thead>
                     <tr>
                         <th :key="'col' + i" v-for="(col,i) in columnsConfig">{{col.caption}}</th>
-                        <th>
-                        </th>
+                        <!-- <th>
+                        </th> -->
                     </tr>
                 </thead>
                 <tbody>
-                    <tr :key="item._id" v-for="(item,j) in items">
+                    <tr :key="item._id" v-for="(item,j) in items" @click.prevent="select(item)">
                     
                         <td :key="'cell' + i + j" v-for="(col,i) in columnsConfig">{{item[col.key]}}</td>    
-                        <td>
+                        <!-- <td>
 
                             <div class="btn-group">
                               <button class="btn btn-sm btn-outline-secondary" @click.prevent="select(item)"> <i class="fa fa-check"></i>
                               </button>    
                             </div>
-                        </td>
+                        </td> -->
                     </tr>
                 </tbody>
             </table>

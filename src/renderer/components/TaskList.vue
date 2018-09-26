@@ -15,9 +15,10 @@
               <thead>
                   <tr>
                       <th>id</th>
+                       <th>Project</th>
                       <th>Name</th>
                       <th>Priority</th>
-                      <th>ProjectId</th>
+                     
                       <!-- <th>
                       </th> -->
                   </tr>
@@ -25,9 +26,10 @@
               <tbody>
                   <tr :key="item.id" v-for="(item) in items">
                       <td>{{item.id}}</td>
+                        <td>{{item.project_name}}</td> 
                       <td>{{item.name}}</td>                            
                       <td>{{item.priority}}</td>   
-                      <td>{{item.project_id}}</td> 
+                    
                       <!-- <td>
 
                          
@@ -53,7 +55,7 @@
     created(){
       let vm = this;
       let url =   "http://pm.nasctech.com/api/v1/custom_objects/timetracker/get_tasks";
-      vm.$db.tasks.find({}, function (err, docs) {
+      vm.$db.tasks.find({}).sort({id:-1}).exec(function (err, docs) {
            vm.items = docs;
         });
       // axios.get(url, {
@@ -67,6 +69,23 @@
       //       });
       //      vm.items = result.data;
       // });
+    },
+    computed:{
+        lastUpdatedDate(){          
+           return this.$store.state.common.lastUpdatedDate;        
+        }
+    },
+    watch:{
+        lastUpdatedDate(newD,oldD){
+          let vm = this;
+          if(newD)
+            {
+              vm.$db.tasks.find({}).sort({id:-1}).exec(function (err, docs) {
+                    vm.items = docs;
+                  });
+            }
+
+        },
     },
     data: function(){
       return {

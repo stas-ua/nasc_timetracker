@@ -91,7 +91,7 @@ export default {
             }
             });
     },
-    getAllProjects(){
+    async  getAllProjects(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_PROJECTS_URL, {
              params: {
@@ -99,7 +99,7 @@ export default {
              }
              });
      },
-     getAllProblems(){
+     async   getAllProblems(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_PROBLEMS_URL, {
              params: {
@@ -107,7 +107,7 @@ export default {
              }
              });
      },
-     getAllRequirements(){
+     async  getAllRequirements(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_REQUIREMENTS_URL, {
              params: {
@@ -115,7 +115,7 @@ export default {
              }
              });
      },
-     getAllWorkOrders(){
+     async  getAllWorkOrders(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_WO_URL, {
              params: {
@@ -123,7 +123,7 @@ export default {
              }
              });
      },
-     getAllSupportTickets(){
+     async  getAllSupportTickets(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_SS_URL, {
              params: {
@@ -131,7 +131,7 @@ export default {
              }
              });
      },
-     getAllTaskActions(){
+     async  getAllTaskActions(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_TASK_ACTIONS_URL, {
              params: {
@@ -139,7 +139,7 @@ export default {
              }
              });
      },
-     getAllHypotesis(){
+     async  getAllHypotesis(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_HYPOTESIS_URL, {
              params: {
@@ -147,7 +147,7 @@ export default {
              }
              });
      },
-     getAllProcesses(){
+     async  getAllProcesses(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_PROCESSES_URL, {
              params: {
@@ -155,7 +155,7 @@ export default {
              }
              });
      },
-     getAllGroupTasks(){
+     async  getAllGroupTasks(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_GROUP_TASKS_URL, {
              params: {
@@ -163,7 +163,7 @@ export default {
              }
              });
      },
-     getAllDeliverables(){
+     async  getAllDeliverables(){
         // console.log(store.state.user.token);
          return axios.get(GET_ALL_DELIVERABLES_URL, {
              params: {

@@ -33,13 +33,13 @@
 
                                 
                               <div class="input-group">
-                                <input name="project"  type="text" class="form-control "  :value="activity.project?activity.project.name:''" disabled  aria-describedby="button-addon_project">
+                                <input name="project" v-validate="'required'" type="text" class="form-control "  :value="activity.project?activity.project.name:''" readonly  aria-describedby="button-addon_project">
                                 <div class="input-group-append">
                                   <a href="#" class="input-group-text" v-show="activity.project?true:false" @click.prevent="activity.project = null;">x</a>
                                   <button class="btn btn-outline-secondary" type="button" id="button-addon_project" @click.prevent="projectPopupParam.show=true">...</button>
                                 </div>
                               </div> 
-                       
+                          <span v-if="errors.first('project')" class="text-danger">{{ errors.first('project') }}</span>
 
                             </div> 
                              <div class="form-group col-sm">
@@ -60,7 +60,7 @@
                         <div class="form-row">                  
 
                             <div class="form-group col-sm">
-                                <label class="col-form-label " for="task">Task <span class="text-danger">*</span></label>
+                                <label class="col-form-label " for="task">Task </label>
                                 
                                 <div class="input-group ">
                                   <input name="task"  type="text" class="form-control "  :value="taskComputed?taskComputed.name:''" disabled  aria-describedby="button-addon_task">
@@ -101,7 +101,16 @@
                        
 
                             </div>  
-                            
+                            <div class="form-group col-sm">
+                                  <label class="col-form-label " for="deliverable">Deliverable </label>                                    
+                                  <div class="input-group">
+                                    <input name="deliverable"  type="text" class="form-control "  :value="activity.deliverable?activity.deliverable.name:''" disabled  aria-describedby="button-addon_deliverable">
+                                    <div class="input-group-append">
+                                       <a href="#" class="input-group-text" v-show="activity.deliverable?true:false" @click.prevent="activity.deliverable = null;">x</a>
+                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_deliverable" @click.prevent="deliverablePopupParam.show=true">...</button>
+                                    </div>
+                                  </div> 
+                                </div> 
                             <!-- <div class="form-group col-sm">
                                 <label class="col-form-label " for="price">Key Target </label>
                                 
@@ -171,9 +180,8 @@
                
                     </div>
                     <div class="col-sm-6" v-show="showAdditionalFields">
-                        <div class="row">
-                          <div class="col-sm-6">
-                               <div class="form-group">
+                      <div class="row ">
+                             <div class="form-group col-sm">
                                   <label class="col-form-label " for="groupTask">Group Task </label>                                    
                                   <div class="input-group">
                                     <input name="groupTask"  type="text" class="form-control "  :value="groupTaskComputed?groupTaskComputed.name:''" disabled  aria-describedby="button-addon_groupTask">
@@ -183,7 +191,7 @@
                                     </div>
                                   </div> 
                                 </div> 
-                                <div class="form-group">
+                                <div class="form-group col-sm">
                                   <label class="col-form-label " for="actionTask">Action Task </label>                                    
                                   <div class="input-group">
                                     <input name="actionTask"  type="text" class="form-control "  :value="actionTaskComputed?actionTaskComputed.name:''" disabled  aria-describedby="button-addon_actionTask">
@@ -193,16 +201,42 @@
                                     </div>
                                   </div> 
                                 </div> 
+
+                      </div>
+                        <div class="row">
+                          <div class="col-sm-6">
+                              
                                 <div class="form-group">
-                                  <label class="col-form-label " for="deliverable">Deliverable </label>                                    
+                                  <label class="col-form-label " for="requirement">Requirement </label>                                    
                                   <div class="input-group">
-                                    <input name="deliverable"  type="text" class="form-control "  :value="activity.deliverable?activity.deliverable.name:''" disabled  aria-describedby="button-addon_deliverable">
+                                    <input name="requirement"  type="text" class="form-control "  :value="activity.requirement?activity.requirement.description:''" disabled  aria-describedby="button-addon_requirement">
                                     <div class="input-group-append">
-                                       <a href="#" class="input-group-text" v-show="activity.deliverable?true:false" @click.prevent="activity.deliverable = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_deliverable" @click.prevent="deliverablePopupParam.show=true">...</button>
+                                      <a href="#" class="input-group-text" v-show="activity.requirement?true:false" @click.prevent="activity.requirement = null;">x</a>
+                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_requirement" @click.prevent="requirementPopupParam.show=true">...</button>
                                     </div>
                                   </div> 
                                 </div> 
+                                <div class="form-group">
+                                  <label class="col-form-label " for="supportTicket">Support Ticket </label>                                    
+                                  <div class="input-group">
+                                    <input name="supportTicket"  type="text" class="form-control "  :value="activity.supportTicket?activity.supportTicket.name:''" disabled  aria-describedby="button-addon_supportTicket">
+                                    <div class="input-group-append">
+                                      <a href="#" class="input-group-text" v-show="activity.supportTicket?true:false" @click.prevent="activity.supportTicket = null;">x</a>
+                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_supportTicket" @click.prevent="supportTicketPopupParam.show=true">...</button>
+                                    </div>
+                                  </div> 
+                                </div> 
+                                <div class="form-group">
+                                  <label class="col-form-label " for="workOrder">Work Order </label>                                    
+                                  <div class="input-group">
+                                    <input name="workOrder"  type="text" class="form-control "  :value="activity.workOrder?activity.workOrder.name:''" disabled  aria-describedby="button-addon_workOrder">
+                                    <div class="input-group-append">
+                                        <a href="#" class="input-group-text" v-show="activity.workOrder?true:false" @click.prevent="activity.workOrder = null;">x</a>
+                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_v" @click.prevent="workOrderPopupParam.show=true">...</button>
+                                    </div>
+                                  </div> 
+                                </div> 
+                                
                           </div>
                           <div class="col-sm-6">
                                 <div class="form-group">
@@ -236,36 +270,7 @@
                                   </div> 
                                 </div> 
 
-                                <div class="form-group">
-                                  <label class="col-form-label " for="requirement">Requirement </label>                                    
-                                  <div class="input-group">
-                                    <input name="requirement"  type="text" class="form-control "  :value="activity.requirement?activity.requirement.description:''" disabled  aria-describedby="button-addon_requirement">
-                                    <div class="input-group-append">
-                                      <a href="#" class="input-group-text" v-show="activity.requirement?true:false" @click.prevent="activity.requirement = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_requirement" @click.prevent="requirementPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
-                                </div> 
-                                <div class="form-group">
-                                  <label class="col-form-label " for="supportTicket">supportTicket </label>                                    
-                                  <div class="input-group">
-                                    <input name="supportTicket"  type="text" class="form-control "  :value="activity.supportTicket?activity.supportTicket.name:''" disabled  aria-describedby="button-addon_supportTicket">
-                                    <div class="input-group-append">
-                                      <a href="#" class="input-group-text" v-show="activity.supportTicket?true:false" @click.prevent="activity.supportTicket = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_supportTicket" @click.prevent="supportTicketPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
-                                </div> 
-                                <div class="form-group">
-                                  <label class="col-form-label " for="workOrder">Work Order </label>                                    
-                                  <div class="input-group">
-                                    <input name="workOrder"  type="text" class="form-control "  :value="activity.workOrder?activity.workOrder.name:''" disabled  aria-describedby="button-addon_workOrder">
-                                    <div class="input-group-append">
-                                        <a href="#" class="input-group-text" v-show="activity.workOrder?true:false" @click.prevent="activity.workOrder = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_v" @click.prevent="workOrderPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
-                                </div> 
+                                
 
                           </div>
                         </div>
