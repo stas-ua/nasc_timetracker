@@ -568,12 +568,29 @@
         }
         
       },
-      toHHMMSS:toHHMMSSObj
+      toHHMMSS:toHHMMSSObj,
+      filterAllProjectRelated(item){
+        let vm =this; 
+          if(item){
+              vm.deliverablePopupParam.filter = { 
+                project_id: item.id
+              };
+              vm.taskPopupParam.filter = { 
+                project_id: item.id
+              };
+            }else{
+              vm.deliverablePopupParam.filter = {  };
+              vm.taskPopupParam.filter = {};
+            }
+      }
     },
+    
     watch:{
       "activity.project": function(newVal, oldVal){
+       let vm =this; 
         if(newVal!=oldVal){
-          this.clearAllProjectRelatedProperties(newVal);
+          vm.clearAllProjectRelatedProperties(newVal);
+          vm.filterAllProjectRelated(newVal);
         }
       },
       "activity.task": function(newVal, oldVal){

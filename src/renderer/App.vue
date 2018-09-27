@@ -51,11 +51,11 @@
                         <i class="fa fa-cloud-download"></i> Load Data
               </a>
           </li>
-          <li class="nav-item ">
+          <!-- <li class="nav-item ">
              <a class="nav-link" href="#" @click.prevent="removeAll" >
                         <i class="fa fa-trash"></i> Clear Store
               </a>
-          </li>
+          </li> -->
           <li class="nav-item">
               <a class="nav-link" href="#"  @click.prevent="logOut" >
                         <i class="fa fa-sign-out"></i> Log Out
