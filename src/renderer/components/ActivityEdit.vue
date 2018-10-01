@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <!-- <img id="logo" src="~@/assets/logo.png" alt="electron-vue"> -->
+  <div v-if="init">
     
     <div class="d-flex justify-content-between mb-2">
       <h5>{{dbId?'Edit Activity':'Create Activity'}}
@@ -32,14 +31,13 @@
                                 <label class="col-form-label " for="project">Project <span class="text-danger">*</span></label>
 
                                 
-                              <div class="input-group">
-                                <input name="project" v-validate="'required'" type="text" class="form-control "  :value="activity.project?activity.project.name:''" readonly  aria-describedby="button-addon_project">
-                                <div class="input-group-append">
-                                  <a href="#" class="input-group-text" v-show="activity.project?true:false" @click.prevent="activity.project = null;">x</a>
-                                  <button class="btn btn-outline-secondary" type="button" id="button-addon_project" @click.prevent="projectPopupParam.show=true">...</button>
-                                </div>
-                              </div> 
-                          <span v-if="errors.first('project')" class="text-danger">{{ errors.first('project') }}</span>
+                                <select-control     
+                                  v-validate="'required'"                          
+                                  v-model="activity.project"
+                                  key="projectControl"
+                                  v-bind="projectPopupParam" >
+                                </select-control> 
+                               <span v-if="errors.first('project')" class="text-danger">{{ errors.first('project') }}</span>
 
                             </div> 
                              <div class="form-group col-sm">
@@ -61,27 +59,22 @@
 
                             <div class="form-group col-sm">
                                 <label class="col-form-label " for="task">Task </label>
-                                
-                                <div class="input-group ">
-                                  <input name="task"  type="text" class="form-control "  :value="taskComputed?taskComputed.name:''" disabled  aria-describedby="button-addon_task">
-                                  <div class="input-group-append">
-                                    <a href="#" class="input-group-text" v-show="taskComputed?true:false" @click.prevent="activity.task = null;">x</a>
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_task" @click.prevent="taskPopupParam.show=true">...</button>
-                                  </div>
-                                </div>                                
+                                 <select-control                              
+                                  v-model="taskComputed"
+                                  key="taskControl"
+                                  v-bind="taskPopupParam" >
+                                </select-control> 
+                           
                        
 
                             </div>  
                             <div class="form-group col-sm">
                                 <label class="col-form-label " for="keytarget">Key Target </label>
-                                
-                                <div class="input-group ">
-                                  <input name="keytarget"  type="text" class="form-control "  :value="activity.keytarget?activity.keytarget.name:''" disabled  aria-describedby="button-addon_keytarget">
-                                  <div class="input-group-append">
-                                    <a href="#" class="input-group-text" v-show="activity.keytarget?true:false" @click.prevent="activity.keytarget = null;">x</a>
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_keytarget" @click.prevent="keytargetPopupParam.show=true">...</button>
-                                  </div>
-                                </div>                                
+                                <select-control                              
+                                  v-model="activity.keytarget"
+                                  key="keytargetControl"
+                                  v-bind="keytargetPopupParam" >
+                                </select-control>          
                        
 
                             </div>
@@ -102,51 +95,28 @@
 
                             </div>  
                             <div class="form-group col-sm">
-                                  <label class="col-form-label " for="deliverable">Deliverable </label>                                    
-                                  <div class="input-group">
-                                    <input name="deliverable"  type="text" class="form-control "  :value="activity.deliverable?activity.deliverable.name:''" disabled  aria-describedby="button-addon_deliverable">
-                                    <div class="input-group-append">
-                                       <a href="#" class="input-group-text" v-show="activity.deliverable?true:false" @click.prevent="activity.deliverable = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_deliverable" @click.prevent="deliverablePopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
-                                </div> 
-                            <!-- <div class="form-group col-sm">
-                                <label class="col-form-label " for="price">Key Target </label>
-                                
-                                <div class="input-group ">
-                                  <input name="keytarget"  type="text" class="form-control "  :value="activity.keytarget?activity.keytarget.name:''" disabled  aria-describedby="button-addon_keytarget">
-                                  <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_keytarget" @click.prevent="keytargetPopupParam.show=true">...</button>
-                                  </div>
-                                </div>                                
-                       
-
-                            </div> -->
+                                  <label class="col-form-label " for="deliverable">Deliverable </label> 
+                                   <select-control                              
+                                      v-model="activity.deliverable"
+                                      key="deliverableControl"
+                                      v-bind="deliverablePopupParam" >
+                                  </select-control> 
+                              </div> 
+                  
                               
                   
               
                         </div> 
-                        <!-- <div class="form-row">
-                            
-                        </div> -->
+                      
                         <div class="form-group">
                                 <label class="col-form-label " for="spentTime">Spent Time <span class="text-danger">*</span></label>
 
                                 <Timepicker v-model="spentTimePicker"></Timepicker> 
 
-                         </div>
-                         
+                         </div>                        
                        
                        
-                        <!-- <div class="row">
-                          <div class="col-sm-4">
-                                 <strong>Spent Time:</strong>
-                          </div>
-                           <div class="col-sm-8">
-                               <Timepicker v-model="spentTimePicker"></Timepicker> 
-                          </div>
-                          </div>  -->
+                     
                         <div class="form-row">
                             <div class="form-group col">
                                 <label class="col-form-label " for="name">Activity <span class="text-danger">*</span></label>
@@ -154,10 +124,7 @@
                                 <textarea v-validate="'required'" name="name" class="form-control " v-model="activity.name" type="text"  placeholder="Type Description For Your Activity..">
                                 </textarea>
                                 <span v-if="errors.first('name')" class="text-danger">{{ errors.first('name') }}</span>
-                               <!--  <span v-show="$v.package.name.$dirty || savePressed">
-                                    <span class="alert-danger" v-if="!$v.package.name.required">{{$t('validation.required')}}</span>
-                                    <span class="alert-danger" v-if="!$v.package.name.minLength">{{$t('validation.minLength',  {length: 2})}}</span>
-                                </span> -->
+                    
 
                             </div>
                             
@@ -168,12 +135,8 @@
                                   <input type="checkbox" class="form-check-input" id="Overtime" v-model="activity.overtime">
                                   <label class="form-check-label" for="Overtime">Overtime</label>
                                 </div>
-                                <!-- <div class="form-group form-check">
-                                  <input type="checkbox" class="form-check-input" id="Uploaded">
-                                  <label class="form-check-label" for="Uploaded">Uploaded</label>
-                                </div> -->
                             </div>
-                        </div>
+                        </div>                  
                         
                           
                                             
@@ -182,24 +145,23 @@
                     <div class="col-sm-6" v-show="showAdditionalFields">
                       <div class="row ">
                              <div class="form-group col-sm">
-                                  <label class="col-form-label " for="groupTask">Group Task </label>                                    
-                                  <div class="input-group">
-                                    <input name="groupTask"  type="text" class="form-control "  :value="groupTaskComputed?groupTaskComputed.name:''" disabled  aria-describedby="button-addon_groupTask">
-                                    <div class="input-group-append">
-                                      <a href="#" class="input-group-text" v-show="groupTaskComputed?true:false" @click.prevent="activity.task = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_groupTask" @click.prevent="groupTaskPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
+                                  <label class="col-form-label " for="groupTask">Group Task </label>  
+                                   <select-control                              
+                                      v-model="groupTaskComputed"
+                                      key="groupTaskControl"
+                                      v-bind="groupTaskPopupParam" >
+                                  </select-control> 
+
+                             
                                 </div> 
                                 <div class="form-group col-sm">
-                                  <label class="col-form-label " for="actionTask">Action Task </label>                                    
-                                  <div class="input-group">
-                                    <input name="actionTask"  type="text" class="form-control "  :value="actionTaskComputed?actionTaskComputed.name:''" disabled  aria-describedby="button-addon_actionTask">
-                                    <div class="input-group-append">
-                                      <a href="#" class="input-group-text" v-show="actionTaskComputed?true:false" @click.prevent="activity.task = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_actionTask" @click.prevent="actionTaskPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
+                                  <label class="col-form-label " for="actionTask">Action Task </label>            
+                                  <select-control                              
+                                      v-model="actionTaskComputed"
+                                      key="actionTaskControl"
+                                      v-bind="actionTaskPopupParam" >
+                                  </select-control>                         
+                              
                                 </div> 
 
                       </div>
@@ -207,67 +169,61 @@
                           <div class="col-sm-6">
                               
                                 <div class="form-group">
-                                  <label class="col-form-label " for="requirement">Requirement </label>                                    
-                                  <div class="input-group">
-                                    <input name="requirement"  type="text" class="form-control "  :value="activity.requirement?activity.requirement.description:''" disabled  aria-describedby="button-addon_requirement">
-                                    <div class="input-group-append">
-                                      <a href="#" class="input-group-text" v-show="activity.requirement?true:false" @click.prevent="activity.requirement = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_requirement" @click.prevent="requirementPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
+                                  <label class="col-form-label " for="requirement">Requirement </label>
+                                  <select-control                              
+                                      v-model="activity.requirement"
+                                      key="requirementControl"
+                                      v-bind="requirementPopupParam" >
+                                  </select-control>                                     
+                              
                                 </div> 
                                 <div class="form-group">
-                                  <label class="col-form-label " for="supportTicket">Support Ticket </label>                                    
-                                  <div class="input-group">
-                                    <input name="supportTicket"  type="text" class="form-control "  :value="activity.supportTicket?activity.supportTicket.name:''" disabled  aria-describedby="button-addon_supportTicket">
-                                    <div class="input-group-append">
-                                      <a href="#" class="input-group-text" v-show="activity.supportTicket?true:false" @click.prevent="activity.supportTicket = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_supportTicket" @click.prevent="supportTicketPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
+                                  <label class="col-form-label " for="supportTicket">Support Ticket </label>  
+                                  <select-control                              
+                                      v-model="activity.supportTicket"
+                                      key="supportTicketControl"
+                                      v-bind="supportTicketPopupParam" >
+                                  </select-control>                                     
+                            
                                 </div> 
                                 <div class="form-group">
-                                  <label class="col-form-label " for="workOrder">Work Order </label>                                    
-                                  <div class="input-group">
-                                    <input name="workOrder"  type="text" class="form-control "  :value="activity.workOrder?activity.workOrder.name:''" disabled  aria-describedby="button-addon_workOrder">
-                                    <div class="input-group-append">
-                                        <a href="#" class="input-group-text" v-show="activity.workOrder?true:false" @click.prevent="activity.workOrder = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_v" @click.prevent="workOrderPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
+                                  <label class="col-form-label " for="workOrder">Work Order </label>  
+                                   <select-control                              
+                                      v-model="activity.workOrder"
+                                      key="workOrderControl"
+                                      v-bind="workOrderPopupParam" >
+                                  </select-control>                                   
+                                
                                 </div> 
                                 
                           </div>
                           <div class="col-sm-6">
                                 <div class="form-group">
-                                  <label class="col-form-label " for="process">Process </label>                                    
-                                  <div class="input-group">
-                                    <input name="process"  type="text" class="form-control "  :value="activity.process?activity.process.name:''" disabled  aria-describedby="button-addon_process">
-                                    <div class="input-group-append">
-                                       <a href="#" class="input-group-text" v-show="activity.process?true:false" @click.prevent="activity.process = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_process" @click.prevent="processPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
+                                  <label class="col-form-label " for="process">Process </label>    
+                                  <select-control                              
+                                      v-model="activity.process"
+                                      key="processControl"
+                                      v-bind="processPopupParam" >
+                                  </select-control>                                  
+                                
                                 </div> 
                                 <div class="form-group">
-                                  <label class="col-form-label " for="problem">Problem </label>                                    
-                                  <div class="input-group">
-                                    <input name="problem"  type="text" class="form-control "  :value="activity.problem?activity.problem.name:''" disabled  aria-describedby="button-addon_problem">
-                                    <div class="input-group-append">
-                                       <a href="#" class="input-group-text" v-show="activity.problem?true:false" @click.prevent="activity.problem = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_problem" @click.prevent="problemPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
+                                  <label class="col-form-label " for="problem">Problem </label>  
+                                  <select-control                              
+                                      v-model="activity.problem"
+                                      key="problemControl"
+                                      v-bind="problemPopupParam" >
+                                  </select-control>                                    
+                             
                                 </div> 
                                 <div class="form-group">
-                                  <label class="col-form-label " for="hypotesis">Hypotesis </label>                                    
-                                  <div class="input-group">
-                                    <input name="hypotesis"  type="text" class="form-control "  :value="activity.hypotesis?activity.hypotesis.name:''" disabled  aria-describedby="button-addon_hypotesis">
-                                    <div class="input-group-append">
-                                       <a href="#" class="input-group-text" v-show="activity.hypotesis?true:false" @click.prevent="activity.hypotesis = null;">x</a>
-                                      <button class="btn btn-outline-secondary" type="button" id="button-addon_hypotesis" @click.prevent="hypotesisPopupParam.show=true">...</button>
-                                    </div>
-                                  </div> 
+                                  <label class="col-form-label " for="hypotesis">Hypotesis </label>   
+                                  <select-control                              
+                                      v-model="activity.hypotesis"
+                                      key="hypotesisControl"
+                                      v-bind="hypotesisPopupParam" >
+                                  </select-control>                                  
+                                
                                 </div> 
 
                                 
@@ -294,79 +250,9 @@
 
 
       </div>
-    </div>
+    </div> 
 
-         <select-item-popup 
-         key="taskPopup"
-         v-bind="taskPopupParam"
-         @itemSelected="selectItem(taskPopupParam, $event);  setProjectFrom($event);" 
-         @canceled="taskPopupParam.show=false;"></select-item-popup>
-
-         <select-item-popup 
-         key="projectPopup"
-         v-bind="projectPopupParam"
-         @itemSelected="selectItem(projectPopupParam, $event); " 
-         @canceled="projectPopupParam.show=false;"></select-item-popup>
-
-          <select-item-popup 
-         key="keytargetPopup"
-         v-bind="keytargetPopupParam"
-         @itemSelected="selectItem(keytargetPopupParam, $event); setProjectFromKeyTarget($event);" 
-         @canceled="keytargetPopupParam.show=false;"></select-item-popup>
-
-         <select-item-popup 
-         key="groupTaskPopup"
-         v-bind="groupTaskPopupParam"
-         @itemSelected="selectItem(groupTaskPopupParam, $event); setProjectFrom($event);" 
-         @canceled="groupTaskPopupParam.show=false;"></select-item-popup>
-
-          <select-item-popup 
-         key="actionTaskPopup"
-         v-bind="actionTaskPopupParam"
-         @itemSelected="selectItem(actionTaskPopupParam, $event); setProjectFrom($event);" 
-         @canceled="actionTaskPopupParam.show=false;"></select-item-popup>
-
-         <select-item-popup 
-         key="deliverablePopup"
-         v-bind="deliverablePopupParam"
-         @itemSelected="selectItem(deliverablePopupParam, $event); setProjectFrom($event);" 
-         @canceled="deliverablePopupParam.show=false;"></select-item-popup>
-
-         <select-item-popup 
-         key="processPopup"
-         v-bind="processPopupParam"
-         @itemSelected="selectItem(processPopupParam, $event); setProjectFrom($event);" 
-         @canceled="processPopupParam.show=false;"></select-item-popup>
          
-         <select-item-popup 
-         key="problemPopup"
-         v-bind="problemPopupParam"
-         @itemSelected="selectItem(problemPopupParam, $event); setProcessFrom($event);" 
-         @canceled="problemPopupParam.show=false;"></select-item-popup>
-
-         <select-item-popup 
-         key="hypotesisPopup"
-         v-bind="hypotesisPopupParam"
-         @itemSelected="selectItem(hypotesisPopupParam, $event); setProblemFrom($event);" 
-         @canceled="hypotesisPopupParam.show=false;"></select-item-popup>
-
-         <select-item-popup 
-         key="requirementPopup"
-         v-bind="requirementPopupParam"
-         @itemSelected="selectItem(requirementPopupParam, $event); setProjectFrom($event);" 
-         @canceled="requirementPopupParam.show=false;"></select-item-popup>
-
-         <select-item-popup 
-         key="supportTicketPopup"
-         v-bind="supportTicketPopupParam"
-         @itemSelected="selectItem(supportTicketPopupParam, $event); setProjectFrom($event);" 
-         @canceled="supportTicketPopupParam.show=false;"></select-item-popup>
-
-         <select-item-popup 
-         key="workOrderPopup"
-         v-bind="workOrderPopupParam"
-         @itemSelected="selectItem(workOrderPopupParam, $event); setSupportTicket($event);" 
-         @canceled="workOrderPopupParam.show=false;"></select-item-popup>
 
   </div>
 </template>
@@ -375,13 +261,17 @@
   //import SystemInformation from './LandingPage/SystemInformation'
  // import axios from 'axios';
  import Datepicker from 'vuejs-datepicker';
-  import SelectItemPopup from './SelectItemPopup';
-  import Timepicker from './TimePicker';
-   import {toHHMMSSObj} from '../common/util';
+ //import SelectItemPopup from './SelectItemPopup';
+ import SelectControl from './SelectItemControl';
+ import Timepicker from './TimePicker';
+ import {toHHMMSSObj} from '../common/util';
+  import actPopup from './activityPopupParam';
+  
+
   var log = require('electron-log');
 
   export default {
-    components:{Datepicker, SelectItemPopup, Timepicker},
+    components:{Datepicker, Timepicker, SelectControl},
     props: ['dbId'],
     name: 'activity-edit',
     created(){
@@ -389,9 +279,13 @@
      // console.log(this.dbId);
       if(this.dbId){
          vm.$db.activities.findOne({_id:this.dbId}, function (err, doc) {
-                //console.log(doc);
-                vm.activity = doc;                
+              //  console.log(doc);
+                vm.activity = doc;      
+                 vm.init      =true;   
+                //console.log(vm.activity)   ;
               });
+      }else{
+         vm.init      =true; 
       }
       vm.keytargetPopupParam.filter = {
         user:vm.$store.state.user.customUserId,
@@ -414,31 +308,44 @@
           }
         },
 
-        taskComputed(){
+        taskComputed:{
+          get(){
               if(this.activity.task && this.activity.task.groupTask)
                 return null;
               else if(this.activity.task && this.activity.task.type == 2)
                 return null;
              
               return this.activity.task;
+          },
+          set(val){
+              this.activity.task = val;
+          }
           
         },
-        groupTaskComputed(){
-              if(this.activity.task && this.activity.task.groupTask)
-                return this.activity.task;         
-              
-              return null;
+        groupTaskComputed:{
+          get(){
+                if(this.activity.task && this.activity.task.groupTask)
+                  return this.activity.task;         
+                
+                return null;
+          },
+            set(val){
+                this.activity.task = val;
+            }
           
         },
-        actionTaskComputed(){
-           
-              if(this.activity.task && this.activity.task.type == 2)
-                return this.activity.task;
-              
-              return null;
+        actionTaskComputed:{
+           get(){
+                if(this.activity.task && this.activity.task.type == 2)
+                  return this.activity.task;
+                
+                return null;
+            },
+            set(val){
+                this.activity.task = val;
+            }            
           
         }
-
       
     },
     methods: {
@@ -455,7 +362,7 @@
          }
 
 
-          vm.$db.activities.update({_id:this.dbId}, this.activity, { upsert: true }, function (err, numReplaced, upsert) {
+          vm.$db.activities.update({_id:vm.dbId}, vm.activity, { upsert: true }, function (err, numReplaced, upsert) {
           //console.log(err);
 
           
@@ -482,12 +389,12 @@
 
       setProjectFrom(item){
         let vm = this;
-        //console.log("svsdvsd");
+        //console.log("svsdvsd");     
         vm.$db.projects.findOne({id:item.project_id}, function (err, doc) {
                   //console.log(doc);
                   if(err){
                     console.error("error on set project", err);
-                  }else{
+                  }else if(doc){
                    
                       vm.activity.project = doc;
                      // console.log("vdvsdv");
@@ -501,7 +408,7 @@
                   //console.log(doc);
                   if(err){
                     console.error("error on set proc", err);
-                  }else {
+                  }else if(doc){
                     
                      vm.activity.process = doc;
                      //vm.setProjectFrom(doc);
@@ -517,7 +424,7 @@
                   //console.log(doc);
                   if(err){
                     console.error("error on set prob", err);
-                  }else{
+                  }else if(doc){
                     
                      vm.activity.problem = doc;
                      vm.setProcessFrom(doc);
@@ -532,7 +439,7 @@
                   //console.log(doc);
                   if(err){
                     console.error("error on set st", err);
-                  }else{
+                  }else if(doc){
                      vm.activity.supportTicket = doc;
                      // console.log("vdvsdv");
                   }
@@ -546,7 +453,7 @@
                   //console.log(doc);
                   if(err){
                     console.error("error on set project", err);
-                  }else{
+                  }else if(doc){
                      vm.activity.project = doc;
                      // console.log("vdvsdv");
                   }
@@ -557,7 +464,7 @@
         if(item){
             if(this.activity.task && this.activity.task.project_id!=item.id)
               this.activity.task = null;
-            if(this.activity.keytarget && this.activity.keytarget.projectId!=item.id)
+            if(this.activity.keytarget && this.activity.keytarget.projectId && this.activity.keytarget.projectId!=item.id)
               this.activity.keytarget = null;
             if(this.activity.requirement && this.activity.requirement.project_id!=item.id)
               this.activity.requirement = null;
@@ -578,183 +485,158 @@
               vm.taskPopupParam.filter = { 
                 project_id: item.id
               };
+              vm.groupTaskPopupParam.filter = { 
+                project_id: item.id
+              };
+              vm.actionTaskPopupParam.filter = { 
+                project_id: item.id
+              };
             }else{
               vm.deliverablePopupParam.filter = {  };
               vm.taskPopupParam.filter = {};
+              vm.groupTaskPopupParam.filter = {};
+              vm.actionTaskPopupParam.filter = {};
             }
       }
     },
     
     watch:{
       "activity.project": function(newVal, oldVal){
-       let vm =this; 
+        let vm =this; 
+        // console.log("activity.project", newVal, oldVal);
         if(newVal!=oldVal){
-          vm.clearAllProjectRelatedProperties(newVal);
+          if(this.init)
+            vm.clearAllProjectRelatedProperties(newVal);
           vm.filterAllProjectRelated(newVal);
         }
       },
       "activity.task": function(newVal, oldVal){
+       // console.log("activity.task", newVal, oldVal);
         if(newVal!=oldVal){
-           if(newVal){
-            let status = this.taskStatusOptions.find(it=>it.id==newVal.statusId)
-            this.activity.taskStatus = status;
+           if(newVal && this.init){
+
+              let status = this.taskStatusOptions.find(it=>it.id==newVal.statusId)
+              this.activity.taskStatus = status;
+
+              if(newVal.project_id && this.activity.project==null)
+                this.setProjectFrom(newVal);
+              else if(newVal.project_id && this.activity.project.id!==newVal.project_id)
+                 this.setProjectFrom(newVal);
+
             }else{
                 this.activity.taskStatus = null;
+            }
+        }
+      },
+      "activity.keytarget": function(newVal, oldVal){
+       //  console.log("activity.keytarget", newVal, oldVal);
+        if(newVal!=oldVal){
+           if(newVal  && this.init){
+
+             if(newVal.projectId && this.activity.project==null)
+                this.setProjectFromKeyTarget(newVal);
+             else if(newVal.projectId && this.activity.project.id!==newVal.projectId)
+                this.setProjectFromKeyTarget(newVal);
+
+            }else{
+            }
+        }
+      },
+      "activity.deliverable": function(newVal, oldVal){
+       // console.log("activity.task", newVal, oldVal);
+        if(newVal!=oldVal){
+           if(newVal && this.init){
+
+              if(newVal.project_id && this.activity.project==null)
+                this.setProjectFrom(newVal);
+              else if(newVal.project_id && this.activity.project.id!==newVal.project_id)
+                 this.setProjectFrom(newVal);
+
+            }
+        }
+      },
+      "activity.process": function(newVal, oldVal){
+       // console.log("activity.task", newVal, oldVal);
+        if(newVal!=oldVal){
+           if(newVal && this.init){
+
+              if(newVal.project_id && this.activity.project==null)
+                this.setProjectFrom(newVal);
+              else if(newVal.project_id && this.activity.project.id!==newVal.project_id)
+                this.setProjectFrom(newVal);
+
+            }
+        }
+      },
+      "activity.problem": function(newVal, oldVal){
+       // console.log("activity.task", newVal, oldVal);
+        if(newVal!=oldVal){
+           if(newVal && this.init){
+
+              if(newVal.processId &&  this.activity.process==null)
+                this.setProcessFrom(newVal);
+              else if(newVal.processId && this.activity.process.id!==newVal.processId)
+                this.setProcessFrom(newVal);
+
+            }
+        }
+      },
+      "activity.hypotesis": function(newVal, oldVal){
+       // console.log("activity.task", newVal, oldVal);
+        if(newVal!=oldVal){
+           if(newVal && this.init){
+
+              if(newVal.problemId && this.activity.problem==null)
+                this.setProblemFrom(newVal);
+              else if(newVal.problemId && this.activity.problem.id!==newVal.problemId)
+                this.setProblemFrom(newVal);
+
+            }
+        }
+      },
+      "activity.requirement": function(newVal, oldVal){
+       // console.log("activity.task", newVal, oldVal);
+        if(newVal!=oldVal){
+           if(newVal && this.init){
+
+              if(newVal.project_id && this.activity.project==null)
+                this.setProjectFrom(newVal);
+              else if(newVal.project_id && this.activity.project.id!==newVal.project_id)
+                 this.setProjectFrom(newVal);
+
+            }
+        }
+      },
+      "activity.supportTicket": function(newVal, oldVal){
+       // console.log("activity.task", newVal, oldVal);
+        if(newVal!=oldVal){
+           if(newVal && this.init){
+
+              if(newVal.project_id && this.activity.project==null)
+                this.setProjectFrom(newVal);
+              else if(newVal.project_id && this.activity.project.id!==newVal.project_id)
+                 this.setProjectFrom(newVal);
+
+            }
+        }
+      },
+       "activity.workOrder": function(newVal, oldVal){
+       // console.log("activity.task", newVal, oldVal);
+        if(newVal!=oldVal){
+           if(newVal && this.init){
+
+              if(newVal.supportTicketId && this.activity.supportTicket==null)
+                this.setSupportTicket(newVal);
+              else if(newVal.supportTicketId && this.activity.supportTicket.id!==newVal.supportTicketId)
+                 this.setSupportTicket(newVal);
+
             }
         }
       },
     },
     data: function(){
       return {
-        taskPopupParam:{
-          show:false,
-          collectionName:"tasks",
-          editedPropertyName:"task",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"project_name", caption:"Project", searchable:true},
-              {key:"name", caption:"Task", searchable:true},
-              {key:"priority", caption:"Priority"},
-              {key:"statusName", caption:"Status"},
-            ],
-            filter:{},
-        }, 
-        groupTaskPopupParam:{
-          show:false,
-          collectionName:"groupTasks",
-          editedPropertyName:"task",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"project_name", caption:"Project", searchable:true},
-              {key:"name", caption:"Task", searchable:true},
-              {key:"priority", caption:"Priority"},
-              {key:"statusName", caption:"Status"},
-            ],
-            filter:{},
-        },
-        actionTaskPopupParam:{
-          show:false,
-          collectionName:"taskActions",
-          editedPropertyName:"task",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"project_name", caption:"Project", searchable:true},
-              {key:"name", caption:"Task", searchable:true},
-              {key:"priority", caption:"Priority"},
-              {key:"statusName", caption:"Status"},
-            ],
-            filter:{},
-        }, 
-         projectPopupParam:{
-          show:false,
-          collectionName:"projects",
-          editedPropertyName:"project",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"name", caption:"Name", searchable:true},
-            ],
-             filter:{},
-        },   
-         keytargetPopupParam:{
-          show:false,
-          collectionName:"keyTargets",
-          editedPropertyName:"keytarget",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"projectName", caption:"Project", searchable:true},
-              {key:"name", caption:"Key Target", searchable:true}
-            ],
-            filter:{ user:null, set_by:null },
-        }, 
-         deliverablePopupParam:{
-          show:false,
-          collectionName:"deliverables",
-          editedPropertyName:"deliverable",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"project_name", caption:"Project", searchable:true},
-              {key:"name", caption:"Deliverable", searchable:true}
-            ],
-            filter:{},
-        },   
-        workOrderPopupParam:{
-          show:false,
-          collectionName:"workOrders",
-          editedPropertyName:"workOrder",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"projectName", caption:"Project", searchable:true},
-              {key:"name", caption:"WO", searchable:true}
-            ],
-            filter:{},
-        },  
-         supportTicketPopupParam:{
-          show:false,
-          collectionName:"supportTickets",
-          editedPropertyName:"supportTicket",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"projectName", caption:"Project", searchable:true},
-              {key:"categoryName", caption:"Category Name", searchable:true},
-              {key:"severity", caption:"Severity", searchable:true},
-               {key:"status", caption:"Status", searchable:true}
-            ],
-            filter:{},
-        }, 
-        requirementPopupParam:{
-          show:false,
-          collectionName:"requirements",
-          editedPropertyName:"requirement",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"projectName", caption:"Project", searchable:true},
-              {key:"burItemName", caption:"Bur Item", searchable:true},
-              {key:"referenceNumber", caption:"Ref Number", searchable:true},
-              {key:"description", caption:"Description", searchable:true}
-            ],
-            filter:{},
-        }, 
-
-        hypotesisPopupParam:{
-          show:false,
-          collectionName:"hypotesis",
-          editedPropertyName:"hypotesis",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"burItemName", caption:"Bur Item", searchable:true},
-              {key:"name", caption:"Hypotesis", searchable:true}
-            ],
-            filter:{},
-        }, 
-
-        problemPopupParam:{
-          show:false,
-          collectionName:"problems",
-          editedPropertyName:"problem",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"process", caption:"Process", searchable:true},
-              {key:"name", caption:"Problem", searchable:true},
-              {key:"status", caption:"Status", searchable:false}
-            ],
-            filter:{},
-        }, 
-
-        processPopupParam:{
-          show:false,
-          collectionName:"processes",
-          editedPropertyName:"process",
-          columnsConfig:[
-              {key:"id", caption:"Id"}, 
-            //  {key:"projectName", caption:"Project", searchable:true},
-              {key:"name", caption:"Process", searchable:true},
-              {key:"category", caption:"Category", searchable:true},
-              {key:"status", caption:"Status", searchable:false},
-            ],
-            filter:{},
-        }, 
-
-
+        init:false,        
         activity:{
           overtime:false,
           uploaded:false,
@@ -790,8 +672,20 @@
         disabledDates: {   
           from: new Date() //new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
         },
-      showAdditionalFields:false,
-        
+        showAdditionalFields:false,
+
+        projectPopupParam:actPopup.projectPopupParam,
+        taskPopupParam:actPopup.taskPopupParam,
+        groupTaskPopupParam:actPopup.groupTaskPopupParam,
+        actionTaskPopupParam:actPopup.actionTaskPopupParam,
+        keytargetPopupParam:actPopup.keytargetPopupParam, 
+        deliverablePopupParam:actPopup.deliverablePopupParam,   
+        workOrderPopupParam:actPopup.workOrderPopupParam,
+        supportTicketPopupParam:actPopup.supportTicketPopupParam, 
+        requirementPopupParam:actPopup.requirementPopupParam, 
+        hypotesisPopupParam:actPopup.hypotesisPopupParam,  
+        problemPopupParam:actPopup.problemPopupParam,  
+        processPopupParam:actPopup.processPopupParam, 
       };
 
     },

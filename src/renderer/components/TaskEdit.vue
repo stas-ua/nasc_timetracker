@@ -30,13 +30,13 @@
                             <div class="form-group col-sm">
                                 <label class="col-form-label " for="project">Project <span class="text-danger">*</span></label>
 
-                                
-                              <div class="input-group">
-                                <input v-validate="'required'" name="project"  type="text" class="form-control "  :value="task.project?task.project.name:''" readonly  aria-describedby="button-addon_project">
-                                <div class="input-group-append">
-                                  <button class="btn btn-outline-secondary" type="button" id="button-addon_project" @click.prevent="projectPopupParam.show=true">...</button>
-                                </div>
-                              </div> 
+                                <select-control     
+                                  v-validate="'required'"                          
+                                  v-model="task.project"
+                                  key="projectControl"
+                                  v-bind="projectPopupParam" >
+                                </select-control> 
+
                                <span v-if="errors.first('project')" class="text-danger">{{ errors.first('project') }}</span>    
                        
 
@@ -44,13 +44,11 @@
                              <div class="form-group col-sm">
                                 <label class="col-form-label " for="sprintItem">Sprint Item </label>
 
-                                
-                              <div class="input-group">
-                                <input name="sprintItem"  type="text" class="form-control "  :value="task.sprintItem?task.sprintItem.itemDescription:''" readonly  aria-describedby="button-addon_sprintItem">
-                                <div class="input-group-append">
-                                  <button class="btn btn-outline-secondary" type="button" id="button-addon_sprintItem" @click.prevent="sprintItemPopupParam.show=true">...</button>
-                                </div>
-                              </div> 
+                                <select-control                              
+                                  v-model="task.sprintItem"
+                                  key="sprintItemControl"
+                                  v-bind="sprintItemPopupParam" >
+                                </select-control>                          
                        
 
                             </div> 
@@ -62,26 +60,24 @@
 
                             <div class="form-group col-sm">
                                 <label class="col-form-label " for="executor">Executor <span class="text-danger">*</span></label>
-                                
-                                <div class="input-group ">
-                                  <input v-validate="'required'" name="executor"   type="text" class="form-control "  :value="task.executor?task.executor.name:''" readonly  aria-describedby="button-addon_executor">
-                                  <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_executor" @click.prevent="executorPopupParam.show=true">...</button>
-                                  </div>
-                                </div>                                
+                                 <select-control 
+                                 v-validate="'required'"                             
+                                  v-model="task.executor"
+                                  key="executorControl"
+                                  v-bind="executorPopupParam" >
+                                </select-control> 
+                               
                                  <span v-if="errors.first('executor')" class="text-danger">{{ errors.first('executor') }}</span>    
 
                             </div>  
                             <div class="form-group col-sm">
                                 <label class="col-form-label " for="keytarget">Key Target </label>
-                                
-                                <div class="input-group ">
-                                  <input name="keytarget"  type="text" class="form-control "  :value="task.keytarget?task.keytarget.name:''" readonly  aria-describedby="button-addon_keytarget">
-                                  <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_keytarget" @click.prevent="keytargetPopupParam.show=true">...</button>
-                                  </div>
-                                </div>                                
-                       
+
+                                <select-control                              
+                                  v-model="task.keytarget"
+                                  key="keytargetControl"
+                                  v-bind="keytargetPopupParam" >
+                                </select-control>        
 
                             </div>
                               
@@ -92,13 +88,12 @@
 
                             <div class="form-group col-sm-6">
                                 <label class="col-form-label " for="deliverable">Deliverable </label>
-                                
-                                <div class="input-group ">
-                                  <input  name="deliverable"   type="text" class="form-control "  :value="task.deliverable?task.deliverable.name:''" readonly  aria-describedby="button-addon_deliverable">
-                                  <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon_deliverable" @click.prevent="deliverablePopupParam.show=true">...</button>
-                                  </div>
-                                </div>   
+                                  <select-control                              
+                                  v-model="task.deliverable"
+                                  key="deliverableControl"
+                                  v-bind="deliverablePopupParam" >
+                                </select-control> 
+                           
 
                             </div>  
                           
@@ -200,35 +195,7 @@
       </div>
     </div>
 
-     <select-item-popup 
-         key="sprintItemPopup"
-         v-bind="sprintItemPopupParam"
-         @itemSelected="selectItem(sprintItemPopupParam, $event);  " 
-         @canceled="sprintItemPopupParam.show=false;"></select-item-popup>
 
-         <select-item-popup 
-         key="usersPopup"
-         v-bind="executorPopupParam"
-         @itemSelected="selectItem(executorPopupParam, $event);  " 
-         @canceled="executorPopupParam.show=false;"></select-item-popup>
-
-         <select-item-popup 
-         key="projectPopup"
-         v-bind="projectPopupParam"
-         @itemSelected="selectItem(projectPopupParam, $event); " 
-         @canceled="projectPopupParam.show=false;"></select-item-popup>
-
-          <select-item-popup 
-         key="deliverablePopup"
-         v-bind="deliverablePopupParam"
-         @itemSelected="selectItem(deliverablePopupParam, $event); " 
-         @canceled="deliverablePopupParam.show=false;"></select-item-popup>
-
-          <select-item-popup 
-         key="keytargetPopup"
-         v-bind="keytargetPopupParam"
-         @itemSelected="selectItem(keytargetPopupParam, $event); " 
-         @canceled="keytargetPopupParam.show=false;"></select-item-popup>
 
             <vue-element-loading :active="isLoading" is-full-screen/>
 
@@ -239,15 +206,15 @@
   //import SystemInformation from './LandingPage/SystemInformation'
  // import axios from 'axios';
  import Datepicker from 'vuejs-datepicker';
-  import SelectItemPopup from './SelectItemPopup';
    import {toHHMMSSObj} from '../common/util';
    import api from '../api';
    import sync from '../service/syncService';
    import VueElementLoading from 'vue-element-loading';
+   import SelectControl from './SelectItemControl';
   var log = require('electron-log');
 
   export default {
-    components:{Datepicker, SelectItemPopup, VueElementLoading},
+    components:{Datepicker, VueElementLoading, SelectControl},
     props: ['dbId'],
     name: 'task-edit',
     created(){
@@ -465,9 +432,12 @@
           show:false,
           collectionName:"users",
           editedPropertyName:"executor",
+          name:'executor',
+          limit:1000,
           columnsConfig:[
+              {key:"id", caption:"Id", trackBy:true, hidden:true},
               {key:"short", caption:"Acronym", searchable:true}, 
-              {key:"name", caption:"Name", searchable:true},
+              {key:"name", caption:"Name", searchable:true, label:true},
               {key:"email", caption:"Email", searchable:true}
             ],
             filter:{},
@@ -476,11 +446,13 @@
           show:false,
           collectionName:"sprintItems",
           editedPropertyName:"sprintItem",
+           name:'sprintItem',
+          limit:1000,
           columnsConfig:[
-              {key:"id", caption:"Id"}, 
+              {key:"id", caption:"Id", trackBy:true}, 
               //{key:"projectName", caption:"Project", searchable:true},
               {key:"sprintName", caption:"Sprint", searchable:true},
-               {key:"itemDescription", caption:"Description", searchable:true},
+               {key:"itemDescription", caption:"Description", searchable:true, label:true},
             ],
             filter:{},
         },  
@@ -488,9 +460,11 @@
           show:false,
           collectionName:"projects",
           editedPropertyName:"project",
+          name:'project',
+           limit:1000,
           columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"name", caption:"Name", searchable:true},
+              {key:"id", caption:"Id", trackBy:true}, 
+              {key:"name", caption:"Name", searchable:true, label:true},
             ],
              filter:{},
         },   
@@ -498,10 +472,12 @@
           show:false,
           collectionName:"keyTargets",
           editedPropertyName:"keytarget",
+          name:'keytarget',
+          limit:1000,
           columnsConfig:[
-              {key:"id", caption:"Id"}, 
+              {key:"id", caption:"Id", trackBy:true}, 
               {key:"projectName", caption:"Project", searchable:true},
-              {key:"name", caption:"Key Target", searchable:true}
+              {key:"name", caption:"Key Target", searchable:true, label:true}
             ],
             filter:{},
         },   
@@ -509,9 +485,11 @@
           show:false,
           collectionName:"deliverables",
           editedPropertyName:"deliverable",
+          name:'deliverable',
+          limit:1000,
           columnsConfig:[
-              {key:"id", caption:"Id"}, 
-              {key:"name", caption:"Name", searchable:true}
+              {key:"id", caption:"Id", trackBy:true}, 
+              {key:"name", caption:"Name", searchable:true, label:true}
             ],
             filter:{},
         },       
