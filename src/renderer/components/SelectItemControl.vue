@@ -111,16 +111,19 @@ import bModalDirective from 'bootstrap-vue/es/directives/modal/modal';
 import _ from "lodash";
 //  import Multiselect from 'vue-multiselect';
 //   import  'vue-multiselect/dist/vue-multiselect.min.css';
-  import {  Select, Option } from 'element-ui';
-  import lang from 'element-ui/lib/locale/lang/en'
-import locale from 'element-ui/lib/locale'
+//   import {  Select, Option } from 'element-ui';
+ // import lang from 'element-ui/lib/locale/lang/en'
+// import locale from 'element-ui/lib/locale'
 
-// configure language
-locale.use(lang);
+// // configure language
+// locale.use(lang);
 
   export default {
     //components:{Datepicker},
-     components: { 'b-modal': bModal,  [Select.name] : Select, [Option.name]:Option},
+     components: { 'b-modal': bModal, 
+      // [Select.name] : Select,
+      //  [Option.name]:Option
+     },
     directives: {
             'b-modal': bModalDirective
     },

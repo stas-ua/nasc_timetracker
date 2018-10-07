@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between mb-3">
       <div class="d-flex">
            <h5 class="mr-3">Activities </h5>
-            <span class="" :class="{'text-danger':isTimerRunning}" >Total Spent: {{totalSpent}}</span>
+            <span class="" :class="{'text-danger':isTimerRunning}" >Total: {{totalSpent}}; Today: {{todaySpent}}</span>
       </div>
    
          <!-- <span class="text-danger " v-if="activeActivity">Current Activity Time: {{activeActivity? toHHMMSS(activeActivity.spentTime):''}}</span> -->
@@ -144,6 +144,36 @@ components: {
               return accum + curr.spentTime;
             },vm.activeActivity? vm.activeActivity.spentTime:0.0));
       
+      },
+      todaySpent(){
+        let vm = this;
+        let today  = new Date();
+        today.setHours(0,0,0,0);
+        let aDate;
+        let initial = 0.0;
+        //let activeAct = vm.activeActivity;
+        if(vm.activeActivity){
+             let activeActDate = new Date(vm.activeActivity.date.getTime());
+             activeActDate.setHours(0,0,0,0);
+             if(today.getTime()==activeActDate.getTime())
+                initial = vm.activeActivity.spentTime;
+        }
+     
+
+        return toHHMMSS(vm.items.reduce((accum, curr, i)=>{
+
+              aDate = new Date(curr.date.getTime());
+              aDate.setHours(0,0,0,0);
+              if(today.getTime()!=aDate.getTime())
+                return accum;
+              
+              if(vm.activeActivity && curr._id==vm.activeActivity._id)
+                return accum;
+
+             
+           
+              return accum + curr.spentTime;
+            },initial));
       }
     },
     methods: {
@@ -298,6 +328,8 @@ components: {
           for (const act of vm.items) {
              if(act.selected && !act.uploaded){
                try {
+                 if(act.spentTime<0.01)
+                  throw new Error("Spent Time should be at least 36 sec");
 
                  let res = await vm.pushOne(act);
 

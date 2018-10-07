@@ -14,7 +14,7 @@
           <div class="list-group mt-2">
             <a class="list-group-item  flex-column align-items-start "  :key="i" v-for="(obj,i) in errorItems">
               <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{obj.activity.name}} ({{ obj.activity.task?obj.activity.task.name:""}})</h5>
+                <h5 class="mb-1">Activity name: {{obj.activity.name}}<span class="small text-muted" v-if="obj.activity.task"> Task:{{ obj.activity.task.name}}</span></h5>
                
               </div>
               <div class="mb-1 text-danger">{{obj.error}}</div>

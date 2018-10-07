@@ -170,8 +170,11 @@ var log = require('electron-log');
         // sync.loadAll();
         vm.$store.dispatch("setLoading");
         sync.reloadAllAsync().then(results=>{
-          vm.$store.dispatch("resetLoading");
-          alert("Data loaded");
+          vm.$store.dispatch("resetLoading");         
+          vm.$message({
+            message: 'Data loaded',
+            type: 'success'
+          });
         });
       }
     }

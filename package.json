@@ -1,8 +1,8 @@
 {
   "name": "timetracker",
-  "version": "2.0.2-alpha.8",
+  "version": "2.0.2-alpha.9",
   "author": "",
-  "description": "An timetracker project",
+  "description": "A timetracker project",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "repository": "https://github.com/stas-ua/nasc_timetracker.git",
@@ -84,7 +84,6 @@
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
     "babel-loader": "^7.1.4",
-    "babel-plugin-component": "^1.1.1",
     "babel-plugin-istanbul": "^4.1.6",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",

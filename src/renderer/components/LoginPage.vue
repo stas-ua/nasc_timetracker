@@ -60,7 +60,9 @@ var log = require('electron-log');
             
             getToken(vm.login,vm.password).then(res=>{
               vm.isLoading = false;
-              log.info(res);
+              log.info('getToken return:' + res);
+              if(!res.token)
+              throw new Error("There is not token for you on server(");
                vm.$store.dispatch("setUser",{name:vm.login, token:res.token, systemUserId: res.systemUserId, customUserId:res.customUserId });
                vm.$router.push({name: 'activity-list'});
             }).catch(err=>{

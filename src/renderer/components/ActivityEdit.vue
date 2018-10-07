@@ -49,7 +49,8 @@
                                             :clear-button="true"
                                             :calendar-button="true"
                                             calendar-button-icon="fa fa-calendar"
-                                            :disabledDates="disabledDates"></datepicker>
+                                           ></datepicker>
+                                            <!-- :disabledDates="disabledDates" -->
                                 <span v-if="errors.first('date')" class="text-danger">{{ errors.first('date') }}</span>
                             </div>
                                        
@@ -109,7 +110,7 @@
                         </div> 
                       
                         <div class="form-group">
-                                <label class="col-form-label " for="spentTime">Spent Time <span class="text-danger">*</span></label>
+                                <label class="col-form-label " for="spentTime">Spent Time</label>
 
                                 <Timepicker v-model="spentTimePicker"></Timepicker> 
 
@@ -267,7 +268,8 @@
  import {toHHMMSSObj} from '../common/util';
   import actPopup from './activityPopupParam';
   
-
+ // const actPopup = JSON.parse(JSON.stringify(actPopupDef)); //we should make a deep copy of object because we will modify filter props
+//console.log(actPopup.taskPopupParam);
   var log = require('electron-log');
 
   export default {
@@ -276,7 +278,7 @@
     name: 'activity-edit',
     created(){
       let vm = this;
-     // console.log(this.dbId);
+     // console.log(actPopup.taskPopupParam);
       if(this.dbId){
          vm.$db.activities.findOne({_id:this.dbId}, function (err, doc) {
               //  console.log(doc);
@@ -303,6 +305,8 @@
           set (value) {
 
             let v = Number(value.hours) * 3600 + Number(value.minutes) * 60 + Number(value.seconds) ;
+            if(v<0)
+             v=0.0;
             this.activity.spentTime = v;
 
           }
@@ -491,11 +495,14 @@
               vm.actionTaskPopupParam.filter = { 
                 project_id: item.id
               };
+              vm.keytargetPopupParam.filter.projectId = item.id
             }else{
               vm.deliverablePopupParam.filter = {  };
               vm.taskPopupParam.filter = {};
               vm.groupTaskPopupParam.filter = {};
               vm.actionTaskPopupParam.filter = {};
+              vm.keytargetPopupParam.filter.projectId = null;
+              delete vm.keytargetPopupParam.filter.projectId;
             }
       }
     },
@@ -674,18 +681,18 @@
         },
         showAdditionalFields:false,
 
-        projectPopupParam:actPopup.projectPopupParam,
-        taskPopupParam:actPopup.taskPopupParam,
-        groupTaskPopupParam:actPopup.groupTaskPopupParam,
-        actionTaskPopupParam:actPopup.actionTaskPopupParam,
-        keytargetPopupParam:actPopup.keytargetPopupParam, 
-        deliverablePopupParam:actPopup.deliverablePopupParam,   
-        workOrderPopupParam:actPopup.workOrderPopupParam,
-        supportTicketPopupParam:actPopup.supportTicketPopupParam, 
-        requirementPopupParam:actPopup.requirementPopupParam, 
-        hypotesisPopupParam:actPopup.hypotesisPopupParam,  
-        problemPopupParam:actPopup.problemPopupParam,  
-        processPopupParam:actPopup.processPopupParam, 
+        projectPopupParam:  JSON.parse(JSON.stringify(actPopup.projectPopupParam)),
+        taskPopupParam: JSON.parse(JSON.stringify(actPopup.taskPopupParam)),
+        groupTaskPopupParam: JSON.parse(JSON.stringify(actPopup.groupTaskPopupParam)),
+        actionTaskPopupParam: JSON.parse(JSON.stringify(actPopup.actionTaskPopupParam)),
+        keytargetPopupParam: JSON.parse(JSON.stringify(actPopup.keytargetPopupParam)), 
+        deliverablePopupParam: JSON.parse(JSON.stringify(actPopup.deliverablePopupParam)),   
+        workOrderPopupParam: JSON.parse(JSON.stringify(actPopup.workOrderPopupParam)), 
+        supportTicketPopupParam: JSON.parse(JSON.stringify(actPopup.supportTicketPopupParam)), 
+        requirementPopupParam: JSON.parse(JSON.stringify(actPopup.requirementPopupParam)),  
+        hypotesisPopupParam: JSON.parse(JSON.stringify(actPopup.hypotesisPopupParam)),  
+        problemPopupParam: JSON.parse(JSON.stringify(actPopup.problemPopupParam)), 
+        processPopupParam: JSON.parse(JSON.stringify(actPopup.processPopupParam)), 
       };
 
     },

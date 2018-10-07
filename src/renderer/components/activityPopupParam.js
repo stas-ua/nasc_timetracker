@@ -23,6 +23,7 @@ export default {
             {key:"name", caption:"Task", searchable:true, label:true},
             {key:"priority", caption:"Priority"},
             {key:"statusName", caption:"Status"},
+            {key:"taskTypeName",caption:"Type" }
           ],
           filter:{},
       }, 
@@ -37,6 +38,7 @@ export default {
             {key:"name", caption:"Task", searchable:true, label:true},
             {key:"priority", caption:"Priority"},
             {key:"statusName", caption:"Status"},
+            {key:"taskTypeName",caption:"Type" }
           ],
           filter:{},
       },
@@ -51,6 +53,7 @@ export default {
             {key:"name", caption:"Task", searchable:true, label:true},
             {key:"priority", caption:"Priority"},
             {key:"statusName", caption:"Status"},
+            {key:"taskTypeName",caption:"Type" }
           ],
           filter:{},
       },   

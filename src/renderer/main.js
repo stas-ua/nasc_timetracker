@@ -13,8 +13,11 @@ import db from './datastore';
 import filters from './common/filters';
 import VeeValidate from 'vee-validate';
 
-
-
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import locale from 'element-ui/lib/locale/lang/en';
+import 'element-ui/packages/popover';
+Vue.use(ElementUI, { locale });
 
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
