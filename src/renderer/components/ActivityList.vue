@@ -304,7 +304,8 @@ components: {
                  processId:act.process?act.process.id:null,
                  problemId:act.problem?act.problem.id:null,
                  hypotesisId:act.hypotesis?act.hypotesis.id:null,
-                 workOrderId:act.workOrder?act.workOrder.id:null
+                 workOrderId:act.workOrder?act.workOrder.id:null,
+                 activityTypeId:act.activityType?act.activityType.id:null,
                };
              return api.createActivityOnServer(sAct).then(result=>{
                   //console.log(result);

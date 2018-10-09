@@ -205,7 +205,8 @@ var log = require('electron-log');
               hypotesis:null,
               requirement:null,
               workOrder:null,
-              supportTicket:null
+              supportTicket:null,
+              activityType:{id:10, text: 'Other'}
             });
           }
         }        
@@ -216,7 +217,7 @@ var log = require('electron-log');
                     log.error("Error in creation activity from tasks", err)
                 }else if(newDocs){
                     vm.$message({
-                      message: newDocs.length +  ' activities was created',
+                      message: newDocs.length +  ' activities created',
                       type: 'success'
                     });
                 }

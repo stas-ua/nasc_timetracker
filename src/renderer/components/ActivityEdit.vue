@@ -108,6 +108,23 @@
                   
               
                         </div> 
+                         <div class="form-row">                  
+
+                            <div class="form-group col-sm-6">
+                                <label class="col-form-label " for="activityType">Activity Type <span class="text-danger">*</span></label>
+                                
+                                <select v-validate="'required'" name="activityType" v-model="activity.activityType" class="form-control" >
+                                    <option :key="el.id" v-for="el in activityTypeOptions" v-bind:value="el" >{{el.text}}</option>
+                                </select>
+                                    
+                                <span v-if="errors.first('activityType')" class="text-danger">{{ errors.first('activityType') }}</span>
+
+                            </div>           
+                  
+                              
+                  
+              
+                        </div> 
                       
                         <div class="form-group">
                                 <label class="col-form-label " for="spentTime">Spent Time</label>
@@ -282,8 +299,31 @@
       if(this.dbId){
          vm.$db.activities.findOne({_id:this.dbId}, function (err, doc) {
               //  console.log(doc);
-                vm.activity = doc;      
-                 vm.init      =true;   
+                if(doc){
+                    vm.activity.overtime=doc.overtime;
+                    vm.activity.uploaded=doc.uploaded;
+                    vm.activity.createdOn=doc.createdOn;
+                    vm.activity.name=doc.name;
+                    vm.activity.project=doc.project;
+                    vm.activity.task=doc.task;
+                    vm.activity.taskStatus=doc.taskStatus;
+                    vm.activity.keytarget=doc.keytarget;
+                    vm.activity.spentTime=doc.spentTime;
+                    vm.activity.date=doc.date;
+                    vm.activity.localId=doc.localId;
+                    vm.activity.deliverable=doc.deliverable;
+                    vm.activity.activityType=doc.activityType;
+                    vm.activity.problem=doc.problem;
+                    vm.activity.process=doc.process;
+                    vm.activity.hypotesis=doc.hypotesis;
+                    vm.activity.requirement=doc.requirement;
+                    vm.activity.workOrder=doc.workOrder;
+                    vm.activity.supportTicket=doc.supportTicket;
+                    vm.activity.activityType=doc.activityType||null;
+                  // vm.activity = doc;      
+                    vm.init      =true; 
+                }
+                  
                 //console.log(vm.activity)   ;
               });
       }else{
@@ -663,7 +703,8 @@
           hypotesis:null,
           requirement:null,
           workOrder:null,
-          supportTicket:null
+          supportTicket:null,
+          activityType:null
         },
         taskStatusOptions:[
           {id:1,text:"New"},
@@ -675,6 +716,18 @@
           {id:7,text:"Hold"},
           {id:8,text:"ReDev"},
           {id:9,text:"Success"},
+        ] ,
+        activityTypeOptions:[
+          {id:1,text:"Meeting/clarification"},
+          {id:2,text:"Discussion"},
+          {id:3,text:"Design"},
+          {id:4,text:"Documentation (process doc/slides)"},
+          {id:5,text:"Uat/testing"},
+          {id:6,text:"Reporting/planning"},
+          {id:7,text:"Bug-fixing"},
+          {id:8,text:"review"},
+          {id:9,text:"New dev"},
+          {id:10,text:"Other"},
         ] ,
         disabledDates: {   
           from: new Date() //new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
