@@ -9,12 +9,22 @@
    
          <!-- <span class="text-danger " v-if="activeActivity">Current Activity Time: {{activeActivity? toHHMMSS(activeActivity.spentTime):''}}</span> -->
       <div>
-          <button class="btn btn-sm btn-outline-danger" @click.prevent="deleteSelected">
+          <!-- <button class="btn btn-sm btn-outline-danger" @click.prevent="deleteSelected">
                 <i class="fa fa-trash"></i> Delete
               </button>
                <button class="btn btn-sm btn-outline-secondary ml-2 " @click.prevent="push">
                 <i class="fa fa-cloud-upload"></i> Push
-              </button>
+              </button> -->
+              <div class="btn-group">
+                <button  :disabled="!someItemSelected" class="btn  btn-sm btn-outline-danger ml-3 dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Actions
+                </button>
+                <div class="dropdown-menu">
+                   <a class="dropdown-item" href="#" @click.prevent="push"><i class="fa fa-cloud-upload"></i> Push Selected</a>
+                  <a class="dropdown-item" href="#"  @click.prevent="deleteSelected"><i class="fa fa-trash"></i> Delete Selected</a>
+                  <a class="dropdown-item" href="#" @click.prevent="copySelected"><i class="fa fa-clone"></i> Clone Selected</a>
+                </div>
+              </div>
               <button class="btn btn-sm btn-outline-secondary ml-2 mr-2" @click.prevent="addNew">
                 <i class="fa fa-plus"></i> Add
               </button>
@@ -128,6 +138,9 @@ components: {
           
         }
       },
+      someItemSelected(){
+          return this.items.some(it=>it.selected);
+      },
       activeActivity(){
         return this.$store.state.activity.activeActivity;
       },
@@ -177,6 +190,63 @@ components: {
       }
     },
     methods: {
+      copySelected(){
+        let vm = this;
+        if(!vm.items.some(a=>a.selected))
+        {
+          alert("You should select at least one activity");
+          return;
+        }
+         vm.isLoading = true;
+        let items = vm.items.filter(a=>a.selected);
+        let clonedActs = JSON.parse(JSON.stringify(items));
+        for(let act of clonedActs){
+            act.createdOn = new Date();
+            act.name = 'Copy of [' + act.name + ']';
+            act.pmId = null;
+            act.date = new Date();
+            act.uploaded = null;
+            act.selected = false;
+            act.spentTime = 0.0;
+            delete act._id;
+        }
+
+        vm.insertActivitiesToDb(clonedActs)
+        .then(res=>{
+          return vm.loadActivitiesAsync();
+        })
+        .then(()=>{
+            vm.isLoading = false;
+            for(let a of items){
+                a.selected = false;
+            }
+        })
+        .catch(err=>{
+            log.error("error in copy  activities", err);
+            vm.$message({
+              message: 'error in copy  activities',
+              type: 'error'
+            });
+        });
+
+      },
+
+      async insertActivitiesToDb(activities){
+        let vm = this;
+        return new Promise(function(resolve,reject){
+              vm.$db.activities.insert(activities, function (err,newDocs) {
+                              if(err){
+                                  log.error("error in copy  activities (inserting process (nedb insert)", err);
+                                  reject(err);
+                              }else{
+                                resolve(newDocs);
+                              }
+                              
+                          });
+        });
+
+
+      },
       async loadActivitiesAsync(){
         let vm = this;
 
