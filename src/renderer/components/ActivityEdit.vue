@@ -172,7 +172,7 @@
 
                              
                                 </div> 
-                                <div class="form-group col-sm">
+                                <!-- <div class="form-group col-sm">
                                   <label class="col-form-label " for="actionTask">Action Task </label>            
                                   <select-control                              
                                       v-model="actionTaskComputed"
@@ -180,7 +180,7 @@
                                       v-bind="actionTaskPopupParam" >
                                   </select-control>                         
                               
-                                </div> 
+                                </div>  -->
 
                       </div>
                         <div class="row">
@@ -356,8 +356,8 @@
           get(){
               if(this.activity.task && this.activity.task.groupTask)
                 return null;
-              else if(this.activity.task && this.activity.task.type == 2)
-                return null;
+              // else if(this.activity.task && this.activity.task.type == 2)
+              //   return null;
              
               return this.activity.task;
           },

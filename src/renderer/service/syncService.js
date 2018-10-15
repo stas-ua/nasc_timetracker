@@ -403,7 +403,7 @@ export default {
             this.loadRequirementsAsync(),
             this.loadWorkOrdersAsync(),
             this.loadSupportTicketsAsync(),
-            this.loadTaskActionsAsync(),
+           // this.loadTaskActionsAsync(),
             this.loadHypotesisAsync(),
             this.loadProcessesAsync(),
             this.loadGroupTasksAsync(),
@@ -422,8 +422,11 @@ export default {
             let result = await api.getUsers();
             let items = [];
                 
-            if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+            if(!(result && result.data && result.data.length > 0)){    
+                 log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null;    
+                // throw new Error("Server does not return data for "  + dbName);
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -431,7 +434,7 @@ export default {
             let remCount = await dbService.removeItemsAsync(dbName);
             let res = await dbService.insertItemsAsync(dbName, items);
 
-            console.log(dbName + " loaded");
+         
             store.dispatch("setMessageState", dbName + " loaded");
             return items;
 
@@ -451,7 +454,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                log.warn("Server response:"  + result); 
+                return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -477,8 +482,10 @@ export default {
             let result = await api.getSprintItems();
             let items = [];
                 
-            if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+            if(!(result && result.data && result.data.length > 0)){  
+                log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -504,7 +511,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                log.warn("Server response:"  + result); 
+                return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -530,7 +539,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                log.warn("Server response:"  + result); 
+                return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -556,7 +567,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                log.warn("Server response:"  + result); 
+                return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -582,7 +595,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -608,7 +623,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -634,7 +651,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -660,7 +679,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -686,7 +707,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -712,7 +735,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -738,7 +763,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               
@@ -764,7 +791,9 @@ export default {
             let items = [];
                 
             if(!(result && result.data && result.data.length > 0)){            
-                 throw new Error("Server does not return data for "  + dbName);
+                log.warn("Server does not return data for "  + dbName);   
+                 log.warn("Server response:"  + result); 
+                 return null; 
             }else{
                 items = sliceData(result.data, dbName);            
             }               

@@ -23,7 +23,13 @@ export default {
             {key:"name", caption:"Task", searchable:true, label:true},
             {key:"priority", caption:"Priority"},
             {key:"statusName", caption:"Status"},
-            {key:"taskTypeName",caption:"Type" }
+            {
+                key:"taskTypeName",
+                caption:"Type",
+                filterKey:"taskTypeId",
+                filterValues:[1,2,3], 
+                filters:[{label:'Task',value:1}, {label:'Action',value:2}, {label:'Buffer',value:3}],
+            }
           ],
           filter:{},
       }, 

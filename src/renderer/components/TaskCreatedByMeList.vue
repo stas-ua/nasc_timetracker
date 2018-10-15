@@ -18,7 +18,12 @@
                        <th>Project</th>
                       <th>Name</th>
                       <th>Priority</th>
+                       <th>Start Day</th>
                       <th>End Day</th>
+                      <th>Executor</th>
+                      <th>Duration</th>
+                      <th>Spent</th>
+                      <th>Left</th>
                       <th>
                       </th>
                   </tr>
@@ -28,8 +33,13 @@
                       <td>{{item.id}}</td>
                       <td>{{item.project_name}}</td> 
                       <td>{{item.name}}</td>                            
-                      <td>{{item.priority}}</td>   
+                      <td>{{item.priority}}</td>  
+                      <td>{{item.startDay|formatDate}}</td>  
                        <td>{{item.endDay|formatDate}}</td>   
+                         <td>{{item.executorName}}</td>  
+                          <td>{{item.estimation}}</td>  
+                           <td>{{item.spentTime}}</td>  
+                            <td>{{item.leftTime}}</td>  
                       <td>
 
                          
