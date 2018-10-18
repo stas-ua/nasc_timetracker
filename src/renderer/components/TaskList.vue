@@ -32,7 +32,7 @@
                         <sortable-item
                         name="ID"
                         prop="id"
-                        :dir="columnsConfig.startDay.id"                         
+                        :dir="columnsConfig.id.sortDir"                         
                         @sortChange="sortChange"></sortable-item>
                        </th>
                        <th> <sortable-item

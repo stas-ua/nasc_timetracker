@@ -2,6 +2,8 @@
 
 import { app, BrowserWindow, Menu, Tray } from 'electron'
 import path from 'path';
+var log = require('electron-log');
+log.transports.file.level = 'info';
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -16,7 +18,15 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
   let tray = null;
-  let iconPath = path.join(__static, 'Clock16x16.ico' );
+  let iconPath = null; 
+
+  var isWin = process.platform === "win32";
+  log.info("isWin", isWin);
+  if(isWin){
+    iconPath = path.join(__static, 'Clock16x16.ico' );
+  }else{
+    iconPath = path.join(__static, 'Clock16x16.icns' );
+  }
   //let iconPath = path.relative( './renderer/assets/icon.ico' );
 
 function createWindow () {
@@ -112,8 +122,7 @@ app.on('activate', () => {
 
 const {dialog} = require('electron');
 import { autoUpdater } from 'electron-updater';
-var log = require('electron-log');
-log.transports.file.level = 'info';
+
  
 autoUpdater.on('update-downloaded', () => {
   sendStatusToWindow('Application will be closed in 5 sec and new version  will be installed.');

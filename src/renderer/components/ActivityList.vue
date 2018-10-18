@@ -39,17 +39,43 @@
               <thead>
                   <tr>
                      <th><input type="checkbox" v-model="allItemsSelected" /></th>
-                      <th>Name</th>
-                      <th>Date</th>
-                      <th>Project</th>
-                      <th>Task</th>
-                      <th>PM ID</th>
-                      <th>Spent Time</th>
+                      <th>
+                          <sortable-item
+                        name="Name"
+                        prop="name"
+                        :dir="columnsConfig.name.sortDir"                         
+                        @sortChange="sortChange"></sortable-item>
+                      </th>
+                      <th><sortable-item
+                        name="Date"
+                        prop="date"
+                        :dir="columnsConfig.date.sortDir"                         
+                        @sortChange="sortChange"></sortable-item></th>
+                      <th><sortable-item
+                        name="Project"
+                        prop="project"
+                        :dir="columnsConfig.project.sortDir"                         
+                        @sortChange="sortChange"></sortable-item></th>
+                      <th><sortable-item
+                        name="Task"
+                        prop="task"
+                        :dir="columnsConfig.task.sortDir"                         
+                        @sortChange="sortChange"></sortable-item></th>
+                      <th><sortable-item
+                        name="PM ID"
+                        prop="pmId"
+                        :dir="columnsConfig.pmId.sortDir"                         
+                        @sortChange="sortChange"></sortable-item></th>
+                      <th><sortable-item
+                        name="Spent Time"
+                        prop="spentTime"
+                        :dir="columnsConfig.spentTime.sortDir"                         
+                        @sortChange="sortChange"></sortable-item></th>
                       <th>
                       </th>
                   </tr>
               </thead>
-              <tbody>
+              <tbody v-loading="isLoading">
                   <tr :key="item._id" v-for="(item) in items" :class="{'text-danger':isActive(item), 'text-success': item.uploaded}">
                       <td><input type="checkbox" v-model="item.selected" /></td>  
                       <td>{{item.name}}</td>                            
@@ -85,25 +111,28 @@
 <script>
   //import SystemInformation from './LandingPage/SystemInformation'
  import api from '../api';
+   import SortableItem from './SortableItem'
 
 import { setTimeout } from 'timers';
 import VueElementLoading from 'vue-element-loading';
 var log = require('electron-log');
   import ErrorsPopup from './ActivityErrorsPopup';
   import {toHHMMSS} from '../common/util';
+  import moment from 'moment';
 
   export default {
     name: 'activity-list',
 components: {
-    VueElementLoading, ErrorsPopup
+    VueElementLoading, ErrorsPopup, SortableItem
   },
     beforeDestroy(){
          //clearInterval(this.activeTask);
     },
     created(){
       let vm = this;
+      vm.tableLoading = true;
       vm.loadActivitiesAsync().then(()=>{
-        vm.isLoading = false;
+        vm.tableLoading = false;
       });
       // let url =   "http://pm.nasctech.com/api/v1/custom_objects/timetracker/get_tasks";
       // axios.get(url, {
@@ -120,11 +149,25 @@ components: {
         //activeTask:null,
         //activeActivity:null,
         isLoading:false,
+        tableLoading:false,
        // allItemsSelected:false,
        // activeTime:null,
         items: [], //[{id:1, name:"SomeName"}, {id:2, name:"SomeName2"},{id:3, name:"SomeName3"},{id:4, name:"SomeName4"}],
         showErrorsPopup:false,
         activityErrors:[],
+        columnsConfig:{
+          name:{sortNum:1,sortDir:null},
+          date:{sortNum:2,sortDir:null},
+          project:{sortNum:3,sortDir:null},
+           task:{sortNum:4,sortDir:null},
+          pmId:{
+            sortNum:5,
+            sortDir:null  },
+          spentTime:{
+            sortNum:5,
+            sortDir:null  },
+
+        },
       };
 
     },
@@ -187,7 +230,35 @@ components: {
            
               return accum + curr.spentTime;
             },initial));
-      }
+      },
+      sortObjParam(){
+        let vm = this;
+        let keysSorted = Object.keys(vm.columnsConfig)
+        .sort(function(a,b){return vm.columnsConfig[a].sortNum-vm.columnsConfig[b].sortNum});
+        
+        let sortObj = {};
+        for (let p of keysSorted){
+          sortObj[p] = vm.columnsConfig[p].sortDir;
+        }
+        return sortObj;
+      },
+      filterObjParam(){
+        let vm = this;
+        let fObj = { };
+        for(let prop in vm.columnsConfig){
+          if(vm.columnsConfig.hasOwnProperty(prop)){
+            if(vm.columnsConfig[prop].filters && vm.columnsConfig[prop].filterValues){
+              if(vm.columnsConfig[prop].filters.length == vm.columnsConfig[prop].filterValues.length){
+                continue;                  
+              }else{
+                  fObj[prop] = { $in: vm.columnsConfig[prop].filterValues };
+              }
+
+            }
+          }
+        }
+        return fObj;
+      },
     },
     methods: {
       copySelected(){
@@ -251,7 +322,9 @@ components: {
         let vm = this;
 
         return  new Promise(function(resolve,reject){
-          vm.$db.activities.find({}).sort({createdOn:-1}).exec( function (err, docs) {
+          let sortPrm = vm.sortObjParam;
+          sortPrm.createdOn =-1;
+          vm.$db.activities.find({}).sort(sortPrm).exec( function (err, docs) {
             if(err){
               reject(err);
             }else{
@@ -298,6 +371,7 @@ components: {
       async archiveActivitiesAsync(items){
         let vm = this;
         await vm.insertToArchivedActivitiesAsync();
+        await vm.cleanUpArchivedActivitiesAsync();
         await vm.deleteActivitiesAsync();
         return;    
       },
@@ -311,6 +385,24 @@ components: {
                                 reject(err);
                             }else{
                               resolve();
+                            }
+                            
+                        });
+
+        });
+        
+      },
+      async cleanUpArchivedActivitiesAsync(){
+        let vm = this;
+        return new Promise(function(resolve,reject){
+            let threeMonthAgoDate = moment().subtract(3, 'months').startOf('month');
+            vm.$db.activitiesDeleted.remove({createdOn:{$lt:threeMonthAgoDate }}, { multi: true }, function (err, numRemoved) {
+                            if(err){
+                                log.error("error in cleanUpArchivedActivitiesAsync", err);
+                                reject(err);
+                            }else{
+                              log.info("Cleaned up old activities; numRemoved: " + numRemoved + "; from date: "  + threeMonthAgoDate.format() );
+                              resolve(numRemoved);
                             }
                             
                         });
@@ -526,7 +618,27 @@ components: {
           return this.$store.state.activity.activeActivity._id==act._id;
         else
           return false;
-      }
+      },
+      sortChange(val){
+        this.columnsConfig[val.prop].sortDir = val.dir;
+        this.columnsConfig[val.prop].sortNum = 1;
+        for(let prop in this.columnsConfig){
+          if (this.columnsConfig.hasOwnProperty(prop)) {
+            if(val.prop!=prop){
+                this.columnsConfig[prop].sortNum ++;
+            }
+              
+              
+          }
+        }       
+
+        this.tableLoading = true;
+        this.loadActivitiesAsync().then(()=>{
+          this.tableLoading = false;
+        });
+      },
+      
+
     }
   }
 </script>

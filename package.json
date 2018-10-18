@@ -1,6 +1,6 @@
 {
   "name": "timetracker",
-  "version": "2.0.2-alpha.12",
+  "version": "2.0.2-alpha.14",
   "author": "",
   "description": "A timetracker project",
   "license": "MIT",
@@ -49,7 +49,7 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/Clock16x16.icns"
     },
     "win": {
       "icon": "build/icons/Clock16x16.ico"
