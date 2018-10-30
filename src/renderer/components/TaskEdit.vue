@@ -234,6 +234,7 @@
                  if(t.id == vm.dbId){
                    vm.setTaskFromServerModel(t) ;
                     vm.isLoading = false;
+                     vm.init = true;
                  }else{
                     log.warn("getTask by id retun task with not the same id");
                     vm.isLoading = false;
@@ -253,6 +254,8 @@
              alert("An error ocurred while loading task from server");
                     vm.quite();
         });
+      }else{
+        vm.init = true;
       }
     },
     computed:{     
@@ -416,7 +419,40 @@
       //   }
         
       // },
-      toHHMMSS:toHHMMSSObj
+      toHHMMSS:toHHMMSSObj,
+      setExecutorFromKeyTarget(item){
+        let vm = this;
+        vm.$db.users.findOne({id:item.user}, function (err, doc) {
+                
+                  if(err){
+                    console.error("setExecutorFromKeyTarget", err);
+                  }else if(doc){
+                     vm.task.executor = doc;
+                     // console.log("vdvsdv");
+                  }
+                    
+                });
+      },
+      filterKeyTargetByExecutor(item){
+          let vm =this; 
+          if(item){
+              vm.keytargetPopupParam.filter = { 
+                user: item.id
+              };
+            }else{
+              vm.keytargetPopupParam.filter = {  };
+            }
+      },
+      clearKeyTarget(item){
+        if(item){
+            if(this.task.keytarget && this.task.keytarget.user!=item.id)
+              this.task.keytarget = null;
+        }else{
+
+        }
+        
+      },
+      
     },
     watch:{
       // "activity.project": function(newVal, oldVal){
@@ -424,9 +460,36 @@
       //     this.clearAllProjectRelatedProperties(newVal);
       //   }
       // },
+      "task.keytarget": function(newVal, oldVal){
+       //  console.log("activity.keytarget", newVal, oldVal);
+        if(newVal!=oldVal){
+           if(newVal  && this.init){
+
+             if(newVal.user && this.task.executor==null)
+                this.setExecutorFromKeyTarget(newVal);
+             else if(newVal.user && this.task.executor.id!==newVal.user)
+                this.setExecutorFromKeyTarget(newVal);
+
+            }else{
+            }
+        }
+      },
+       "task.executor": function(newVal, oldVal){
+       //  console.log("activity.keytarget", newVal, oldVal);
+        let vm =this; 
+        // console.log("activity.project", newVal, oldVal);
+        if(newVal!=oldVal){
+          if(this.init){
+                vm.clearKeyTarget(newVal);
+          }            
+          vm.filterKeyTargetByExecutor(newVal);
+
+        }
+      },
     },
     data: function(){
       return {
+        init:false,
         isLoading:false,
         executorPopupParam:{
           show:false,
@@ -477,7 +540,8 @@
           columnsConfig:[
               {key:"id", caption:"Id", trackBy:true}, 
               {key:"projectName", caption:"Project", searchable:true},
-              {key:"name", caption:"Key Target", searchable:true, label:true}
+              {key:"name", caption:"Key Target", searchable:true, label:true},
+              {key:"userName", caption:"Executor", searchable:true}
             ],
             filter:{},
         },   

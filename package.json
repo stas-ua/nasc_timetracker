@@ -1,6 +1,6 @@
 {
   "name": "timetracker",
-  "version": "2.0.2-alpha.14",
+  "version": "2.0.2-alpha.15",
   "author": "",
   "description": "A timetracker project",
   "license": "MIT",
@@ -8,6 +8,7 @@
   "repository": "https://github.com/stas-ua/nasc_timetracker.git",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
+    "build32": "node .electron-vue/build.js && electron-builder --ia32",
     "publish": "node .electron-vue/build.js && electron-builder -p always",
     "buildMac": "node .electron-vue/build.js && electron-builder -mw",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",

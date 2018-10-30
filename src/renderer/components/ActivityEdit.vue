@@ -508,8 +508,8 @@
         if(item){
             if(this.activity.task && this.activity.task.project_id!=item.id)
               this.activity.task = null;
-            if(this.activity.keytarget && this.activity.keytarget.projectId && this.activity.keytarget.projectId!=item.id)
-              this.activity.keytarget = null;
+            // if(this.activity.keytarget && this.activity.keytarget.projectId && this.activity.keytarget.projectId!=item.id)
+            //   this.activity.keytarget = null;
             if(this.activity.requirement && this.activity.requirement.project_id!=item.id)
               this.activity.requirement = null;
             if(this.activity.deliverable && this.activity.deliverable.project_id!=item.id)
@@ -535,14 +535,14 @@
               vm.actionTaskPopupParam.filter = { 
                 project_id: item.id
               };
-              vm.keytargetPopupParam.filter.projectId = item.id
+             // vm.keytargetPopupParam.filter.projectId = item.id
             }else{
               vm.deliverablePopupParam.filter = {  };
               vm.taskPopupParam.filter = {};
               vm.groupTaskPopupParam.filter = {};
               vm.actionTaskPopupParam.filter = {};
               vm.keytargetPopupParam.filter.projectId = null;
-              delete vm.keytargetPopupParam.filter.projectId;
+             // delete vm.keytargetPopupParam.filter.projectId;
             }
       }
     },
@@ -575,20 +575,20 @@
             }
         }
       },
-      "activity.keytarget": function(newVal, oldVal){
-       //  console.log("activity.keytarget", newVal, oldVal);
-        if(newVal!=oldVal){
-           if(newVal  && this.init){
+      // "activity.keytarget": function(newVal, oldVal){
+      //  //  console.log("activity.keytarget", newVal, oldVal);
+      //   if(newVal!=oldVal){
+      //      if(newVal  && this.init){
 
-             if(newVal.projectId && this.activity.project==null)
-                this.setProjectFromKeyTarget(newVal);
-             else if(newVal.projectId && this.activity.project.id!==newVal.projectId)
-                this.setProjectFromKeyTarget(newVal);
+      //        if(newVal.projectId && this.activity.project==null)
+      //           this.setProjectFromKeyTarget(newVal);
+      //        else if(newVal.projectId && this.activity.project.id!==newVal.projectId)
+      //           this.setProjectFromKeyTarget(newVal);
 
-            }else{
-            }
-        }
-      },
+      //       }else{
+      //       }
+      //   }
+      // },
       "activity.deliverable": function(newVal, oldVal){
        // console.log("activity.task", newVal, oldVal);
         if(newVal!=oldVal){
