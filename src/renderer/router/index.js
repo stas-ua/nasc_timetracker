@@ -85,6 +85,15 @@ const  router =  new Router({
       }
     },
     {
+      path: '/taskDetails/:dbId',
+      name: 'task-details',
+      component: require('@/components/TaskDetails').default,
+      props:true,
+      meta:{
+        private: true,
+      }
+    },
+    {
       path: '/projectList',
       name: 'project-list',
       component: require('@/components/ProjectList').default  ,

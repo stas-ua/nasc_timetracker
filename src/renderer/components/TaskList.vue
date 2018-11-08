@@ -76,7 +76,11 @@
                       <td>{{item.name}}</td>    
                        <td>{{item.startDay|formatDate}}</td>                          
                       <td>{{item.priority}}</td>   
-               
+               <td class="text-center">
+                 <button class="btn btn-outline-secondary btn-sm" @click.prevent="taskDetails(item)">
+                   <i class="fa fa-eye"></i>
+                 </button>
+                 </td>
                      
                   </tr>
               </tbody>
@@ -278,7 +282,10 @@ var log = require('electron-log');
       },
       editTask(item){
         this.$router.push({ path: `/taskEdit/${item._id}` });
-      },         
+      }, 
+      taskDetails(item){
+          this.$router.push({ path: `/taskDetails/${item._id}` });
+      } ,       
       sortChange(val){
         this.columnsConfig[val.prop].sortDir = val.dir;
         this.columnsConfig[val.prop].sortNum = 1;
