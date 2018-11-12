@@ -115,8 +115,8 @@
                                 <span v-if="errors.first('startDate')" class="text-danger">{{ errors.first('startDate') }}</span>
                             </div>
                              <div class="form-group col-sm">
-                                <label class="col-form-label " for="endDate">Day End</label>
-                                <datepicker name="endDate"  :bootstrap-styling="true"
+                                <label class="col-form-label " for="endDate">Day End <span class="text-danger">*</span></label>
+                                <datepicker name="endDate" v-validate="'required'" :bootstrap-styling="true"
                                             format="dd/MM/yyyy"
                                             v-model="task.endDate"
                                             :value="task.endDate"
@@ -124,7 +124,7 @@
                                             :calendar-button="true"
                                             calendar-button-icon="fa fa-calendar"
                                             ></datepicker>
-                                <!-- <span v-if="errors.first('endDate')" class="text-danger">{{ errors.first('endDate') }}</span> -->
+                                <span v-if="errors.first('endDate')" class="text-danger">{{ errors.first('endDate') }}</span>
                             </div>
                                        
               
