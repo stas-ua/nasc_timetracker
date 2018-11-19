@@ -331,7 +331,7 @@
       }
       vm.keytargetPopupParam.filter = {
         user:vm.$store.state.user.customUserId,
-        set_by:vm.$store.state.user.systemUserId,
+       // set_by:vm.$store.state.user.systemUserId,
       };
 
     },
