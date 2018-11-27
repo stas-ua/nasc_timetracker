@@ -13,6 +13,7 @@ function sliceData(data, name){
             log.warn("Loaded more than 7000 elements of " + name + "!!! Only 7000 items will be saved");
             items = data.slice(0,7000);
     }else{
+        log.info("Loaded " + data.length + " elements of " + name + ".");
         items = data;
     }
     return items;

@@ -31,6 +31,7 @@ const mutations = {
   },
   SET_TIMER_TASK_ID(state,payload){
     state.timerTaskId = payload;
+    log.info("SET_TIMER_TASK_ID", payload);
   },
   SET_SAVED_ON(state,payload){
     state.savedOnDate = payload;
@@ -95,12 +96,14 @@ const actions = {
 
   },
   startTimer ({ state, commit, dispatch}, activity) {   
+    log.info("Start Timer", {_id:activity._id, name:activity.name});
     if(state.timerTaskId!=null){
       log.warn("New timer not alowed untill previos stoped");           
     }else{
       commit("INIT_STATE", activity);
       //commit("SET_TIMER_TASK");
       dispatch("setTimer");
+      
     }  
 
   },

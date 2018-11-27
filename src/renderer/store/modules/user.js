@@ -1,5 +1,6 @@
 import db from '../../datastore';
 const userKey = "user";
+var log = require('electron-log');
 
 const state = {
   login: null,
@@ -9,17 +10,20 @@ const state = {
 }
 
 const mutations = {
-  SET_USER (state, payload) {
+  SET_USER (state, payload) {    
     state.login = payload.login;
     state.token = payload.token;
     state.systemUserId = payload.systemUserId;
     state.customUserId = payload.customUserId;
+    log.info("SET_USER", {login :payload.name, systemUserId: payload.systemUserId, customUserId:payload.customUserId});
+
   },
   RESET_USER (state) {
     state.login = null;
     state.token = null;
     state.systemUserId = null;
     state.customUserId = null;
+    log.info("RESET_USER", payload);
   }
 }
 

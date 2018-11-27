@@ -131,7 +131,7 @@ import _ from "lodash";
 
 // // configure language
 // locale.use(lang);
-
+  var log = require('electron-log');
   export default {
     //components:{Datepicker},
      components: { 'b-modal': bModal, SortableItem,
@@ -145,7 +145,7 @@ import _ from "lodash";
     name: 'select-item-control',
     created(){
      
-     
+      
       if(this.value ){
         this.items.push(this.value);
       }
@@ -291,6 +291,7 @@ import _ from "lodash";
       },
       removeValue(){
         this.$emit('input', null);
+       
       },
       select (item) {
         let vm = this;
@@ -311,10 +312,25 @@ import _ from "lodash";
         //     return;
         if(!val){
              let resFilter = { $and: [vm.filter  , vm.filterObjParam] };     
-             vm.$db[vm.collectionName].find(resFilter).sort(vm.sortObjParam).limit(vm.limit).exec(  function (err, doc) {
+             vm.$db[vm.collectionName].find(resFilter).sort(vm.sortObjParam).limit(vm.limit).exec(  function (err, docs) {
                   //console.log(doc);
-                  vm.items = doc;
-                  vm.isLoading = false;
+                  if(err){
+                    log.error("Error in " + vm.collectionName  + "load", err);
+                  }else
+                  if(docs){
+                      vm.items = docs
+                      //  .map(it=>{
+                      //     if(it[vm.label])
+                      //         it[vm.label] = 
+                      //    return 
+                      //  });
+                      log.info("Docs loaded", { count: docs.length, entities: vm.collectionName , filter:JSON.stringify(resFilter)});
+                      vm.isLoading = false;
+                  }else{
+                    log.warn("Docs not loaded!", {  entities: vm.collectionName });
+                      vm.isLoading = false;
+                  }
+                  
                 });
         }else{
             let filterExpr = [];
@@ -334,11 +350,21 @@ import _ from "lodash";
             vm.$db[vm.collectionName].find(resFilter).sort(vm.sortObjParam).limit(vm.limit).exec( function (err, docs) {
                       //console.log(doc);
                       if(err){
-                        console.error(err);
-                      }else{
-                          vm.items = docs;
-                          vm.isLoading = false;
-                      }
+                          log.error("Error in " + vm.collectionName  + "load", err);
+                        }else
+                        if(docs){
+                            vm.items = docs
+                            //  .map(it=>{
+                            //     if(it[vm.label])
+                            //         it[vm.label] = 
+                            //    return 
+                            //  });
+                            log.info("Docs loaded", { count: docs.length, entities: vm.collectionName , filter: JSON.stringify(resFilter)});
+                            vm.isLoading = false;
+                        }else{
+                          log.warn("Docs not loaded!", {  entities: vm.collectionName });
+                            vm.isLoading = false;
+                        }
                       
                     });
 
@@ -361,6 +387,9 @@ import _ from "lodash";
         vm.isLoading = true;
         vm.$db[vm.collectionName].find(vm.filter).sort(vm.sortObjParam).limit(vm.limit).exec( function (err, docs) {
                 // console.log(doc);
+                if(err){
+                    log.error("Error in " + vm.collectionName  + "load", err);
+                }else
                 if(docs){
                      vm.items = docs
                     //  .map(it=>{
@@ -368,8 +397,10 @@ import _ from "lodash";
                     //         it[vm.label] = 
                     //    return 
                     //  });
+                     log.info("Docs loaded", { count: docs.length, entities: vm.collectionName , filter:JSON.stringify(vm.filter)});
                     vm.isLoading = false;
                 }else{
+                  log.warn("Docs not loaded!", {  entities: vm.collectionName });
                     vm.isLoading = false;
                 }
                
@@ -385,12 +416,15 @@ import _ from "lodash";
     },
     watch: {
       searchPattern:function(val){
-        
-          this.debouncedSearch(val);
+
+          log.info("Search Pattern Changed", { entities: this.collectionName , searchVal:val});
+          if(this.showPopup)
+             this.debouncedSearch(val);
+
       },
       showPopup: function (val) {  
         let vm = this;        
-        
+        log.info("Show Popup For", { entities: this.collectionName , showPopup:val});
         if(val){          
           //console.log(vm.filter);
           vm.columnsConfigLocal =  vm.columnsConfig.map(col=>{
@@ -417,6 +451,8 @@ import _ from "lodash";
       },
       value:function(val){
         //console.log("fvsdvsvsvs", val);
+        
+        log.info("Value changed in control " + this.name, val);
         if(val  )
           this.items = [val];
          

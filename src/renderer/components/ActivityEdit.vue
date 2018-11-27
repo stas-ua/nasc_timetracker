@@ -297,8 +297,12 @@
       let vm = this;
      // console.log(actPopup.taskPopupParam);
       if(this.dbId){
+         log.info("Edit Activity Started", {id:this.dbId});
          vm.$db.activities.findOne({_id:this.dbId}, function (err, doc) {
               //  console.log(doc);
+              if(err){
+                  log.error("Edited Activity Error load in db", err);
+              }else
                 if(doc){
                     vm.activity.overtime=doc.overtime;
                     vm.activity.uploaded=doc.uploaded;
@@ -320,13 +324,19 @@
                     vm.activity.workOrder=doc.workOrder;
                     vm.activity.supportTicket=doc.supportTicket;
                     vm.activity.activityType=doc.activityType||null;
-                  // vm.activity = doc;      
+                  // vm.activity = doc;  
+                    log.info("Edited Activity Loaded", doc);    
                     vm.init      =true; 
+                }else{
+                    log.error("Edited Activity Error load in db", err);
                 }
                   
                 //console.log(vm.activity)   ;
               });
-      }else{
+         
+     
+     }else{
+         log.info("Creation Activity Started");
          vm.init      =true; 
       }
       vm.keytargetPopupParam.filter = {
@@ -396,12 +406,13 @@
       
       submit () {
         let vm = this;
+        log.info("Activity Submit pressed");
         vm.$validator.validateAll().then((result) => {
         if (result) {
          
          if(!vm.activity.project&&!vm.activity.task)
          {
-           alert('Project OR Task Should Be selected!');
+           alert('Project Or Task Should Be selected!');
            return;
          }
 
@@ -414,6 +425,7 @@
               });
           return;
         }
+         log.info("Activity Validation Failed");
 
         alert('Please, check errors on fields!');
       });
@@ -421,6 +433,7 @@
       },
       quite(){
         //console.log("in quite");
+        log.info("Activity Edit Quit");
         let vm = this;
             vm.$router.push({ name: 'activity-list' });
       },
@@ -437,7 +450,7 @@
         vm.$db.projects.findOne({id:item.project_id}, function (err, doc) {
                   //console.log(doc);
                   if(err){
-                    console.error("error on set project", err);
+                    log.error("error on set project", err);
                   }else if(doc){
                    
                       vm.activity.project = doc;
@@ -451,7 +464,7 @@
         vm.$db.processes.findOne({id:item.processId}, function (err, doc) {
                   //console.log(doc);
                   if(err){
-                    console.error("error on set proc", err);
+                    log.error("error on set proc", err);
                   }else if(doc){
                     
                      vm.activity.process = doc;
@@ -467,7 +480,7 @@
         vm.$db.problems.findOne({id:item.problemId}, function (err, doc) {
                   //console.log(doc);
                   if(err){
-                    console.error("error on set prob", err);
+                    log.error("error on set prob", err);
                   }else if(doc){
                     
                      vm.activity.problem = doc;
@@ -482,7 +495,7 @@
         vm.$db.supportTickets.findOne({id:item.supportTicketId}, function (err, doc) {
                   //console.log(doc);
                   if(err){
-                    console.error("error on set st", err);
+                    log.error("error on set st", err);
                   }else if(doc){
                      vm.activity.supportTicket = doc;
                      // console.log("vdvsdv");
@@ -496,7 +509,7 @@
         vm.$db.projects.findOne({id:item.projectId}, function (err, doc) {
                   //console.log(doc);
                   if(err){
-                    console.error("error on set project", err);
+                    log.error("error on set project", err);
                   }else if(doc){
                      vm.activity.project = doc;
                      // console.log("vdvsdv");
